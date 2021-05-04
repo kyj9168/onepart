@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="OpenChatComm">
+	<resultMap id="openChatCommVOResultSet" type="com.kh.onepart.resident.warm.open_chatting.model.vo.OpenChatCommVO">
+		<id property="openChatCommSeq" column="OPEN_CHAT_COMM_SEQ"/>
+		<result property="openChatCommContent" column="OPEN_CHAT_COMM_CONTENT"/>
+		<result property="openChatMemberSeq" column="OPEN_CHAT_MEMBER_SEQ"/>
+		<result property="openChatCommSendDt" column="OPEN_CHAT_COMM_SEND_DT"/>
+		<result property="openChatCommAttchTf" column="OPEN_CHAT_COMM_ATTCH_TF"/>
+		<result property="openChatCommImgTf" column="OPEN_CHAT_COMM_IMG_TF"/>
+
+		<result property="openChatSeq" column="OPEN_CHAT_SEQ"/>
+		<result property="residentSeq" column="RESIDENT_SEQ"/>
+		<result property="residentId" column="RESIDENT_ID"/>
+	</resultMap>
+
+	<select id="selectListByOpenChatSeq" resultMap="openChatCommVOResultSet" parameterType="Integer">
+		SELECT OCC.*,	OCM.RESIDENT_SEQ, OCM.OPEN_CHAT_SEQ, RESIDENT_ID
+		FROM OPEN_CHAT_COMM OCC
+		JOIN OPEN_CHAT_MEMBER OCM ON (occ.OPEN_CHAT_MEMBER_SEQ = ocm.OPEN_CHAT_MEMBER_SEQ)
+		JOIN RESIDENT R ON ( R.RESIDENT_SEQ =  ocm.RESIDENT_SEQ)
+		WHERE OPEN_CHAT_SEQ = #{openChatSeq}
+		ORDER BY OPEN_CHAT_COMM_SEQ ASC
+	</select>
+
+	<insert id="insert" parameterType="OpenChatCommVO">
+		INSERT INTO OPEN_CHAT_COMM
+		(
+			OPEN_CHAT_COMM_SEQ,
+			OPEN_CHAT_COMM_CONTENT,
+			OPEN_CHAT_MEMBER_SEQ,
+			OPEN_CHAT_COMM_SEND_DT,
+			OPEN_CHAT_COMM_ATTCH_TF,
+			OPEN_CHAT_COMM_IMG_TF
+		)
+		VALUES
+		(
+			OPEN_CHAT_COMM_SEQ.nextval,
+			#{openChatCommContent},
+		<if test="openChatMemberSeq gt 0">
+			#{openChatMemberSeq},
+		</if>
+		<if test="openChatMemberSeq lte 0">
+			(SELECT OPEN_CHAT_MEMBER_SEQ
+			 FROM OPEN_CHAT_MEMBER
+			 WHERE OPEN_CHAT_SEQ = #{openChatSeq}
+			 AND RESIDENT_SEQ = #{residentSeq}),
+		</if>
+			sysdate,
+			#{openChatCommAttchTf},
+			#{openChatCommImgTf}
+		)
+	</insert>
+
+	<insert id="saveOpenChatImageComm" parameterType="OpenChatCommVO">
+		INSERT INTO OPEN_CHAT_COMM
+		(
+			OPEN_CHAT_COMM_SEQ,
+			OPEN_CHAT_COMM_CONTENT,
+			OPEN_CHAT_MEMBER_SEQ,
+			OPEN_CHAT_COMM_SEND_DT,
+			OPEN_CHAT_COMM_ATTCH_TF,
+			OPEN_CHAT_COMM_IMG_TF
+		)
+		VALUES
+		(
+			OPEN_CHAT_COMM_SEQ.nextval,
+			#{openChatCommContent},
+		<if test="openChatMemberSeq gt 0">
+			#{openChatMemberSeq},
+		</if>
+		<if test="openChatMemberSeq lte 0">
+			(SELECT OPEN_CHAT_MEMBER_SEQ
+			 FROM OPEN_CHAT_MEMBER
+			 WHERE OPEN_CHAT_SEQ = #{openChatSeq}
+			 AND RESIDENT_SEQ = #{residentSeq}),
+		</if>
+			sysdate,
+			#{openChatCommAttchTf},
+			#{openChatCommImgTf}
+		)
+	</insert>
+
+
+</mapper>

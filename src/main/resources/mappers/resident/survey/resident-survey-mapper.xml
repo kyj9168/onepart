@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ResidentSurvey">
+
+	<resultMap type="com.kh.onepart.resident.my_apartment.survey.model.vo.SurveyVO" id="surveyVOResultSet">
+		<id property="surveySeq" column="SURVEY_SEQ"/>
+		<result property="surveyTitle" column="SURVEY_TITLE"/>
+		<result property="surveyStatus" column="SURVEY_STATUS"/>
+		<result property="surveyType" column="SURVEY_TYPE"/>
+		<result property="surveySimpleIntro" column="SURVEY_SIMPLE_INTRO"/>
+		<result property="surveyPeriod" column="SURVEY_PERIOD"/>
+		<result property="surveyEnrollDt" column="SURVEY_ENROLL_DT"/>
+		<result property="surveyDelTf" column="SURVEY_DEL_TF"/>
+		<result property="residentSeq" column="RESIDENT_SEQ"/>
+	</resultMap>
+
+	<resultMap type="com.kh.onepart.resident.my_apartment.survey.model.vo.SurveyQstn" id="surveyQstnResultSet">
+		<id property="surveyQstnSeq" column="SURVEY_QSTN_SEQ"/>
+		<result property="surveySeq" column="SURVEY_SEQ"/>
+		<result property="surveyQstnNum" column="SURVEY_QSTN_NUM"/>
+		<result property="surveyQstnTitle" column="SURVEY_QSTN_TITLE"/>
+		<result property="surveyQstnNece" column="SURVEY_QSTN_NECE"/>
+		<result property="surveyQstnType" column="SURVEY_QSTN_TYPE"/>
+	</resultMap>
+
+	<resultMap type="com.kh.onepart.resident.my_apartment.survey.model.vo.SurveyQstnOption" id="surveyQstnOptionResultSet">
+		<id property="surveyQstnOptionSeq" column="SURVEY_QSTN_OPTION_SEQ"/>
+		<result property="surveyQstnOptionNum" column="SURVEY_QSTN_OPTION_NUM"/>
+		<result property="surveyQstnOptionContent" column="SURVEY_QSTN_OPTION_CONTENT"/>
+		<result property="surveyQstnSeq" column="SURVEY_QSTN_SEQ"/>
+	</resultMap>
+
+	<!-- 설문조사 통계용 -->
+	<resultMap type="com.kh.onepart.resident.my_apartment.survey.model.vo.SurveyStatisticsVO" id="surveyStatisticsVO">
+		<result property="aptDetailInfoSeq" column="APT_DETAIL_INFO_SEQ"/>
+		<result property="bdNm" column="BD_NM"/>
+		<result property="rmNm" column="RM_NM"/>
+		<result property="residentSeq" column="RESIDENT_SEQ"/>
+		<result property="residentNm" column="RESIDENT_NM"/>
+		<result property="selectedAnswer" column="SELECTED_ANSWER"/>
+		<result property="surveyQstnType" column="SURVEY_QSTN_TYPE"/>
+	</resultMap>
+
+
+
+	<!-- 설문조사 진행 중 카운트 - 설문조사 메인 -->
+	<select id="selectIngSurveyListCount" resultType="_int" parameterType="requestSurveyMainVO">
+		SELECT  COUNT(*)
+		FROM    SURVEY t1
+		LEFT OUTER JOIN SURVEY_PRTCPT t2
+		ON      (t1.SURVEY_SEQ = t2.SURVEY_SEQ)
+		AND     t2.RESIDENT_SEQ = #{residentSeq}
+		WHERE   t1.SURVEY_STATUS = #{surveyType}
+		AND     t1.SURVEY_DEL_TF = 'N'
+		ORDER BY TO_DATE(SUBSTR(t1.SURVEY_PERIOD, 15),'RRRR/MM/DD') ASC
+	</select>
+
+	<!-- 설문조사 진행 중 리스트 - 설문조사 메인 -->
+	<select id="selectSurveyList" resultMap="surveyVOResultSet" parameterType="requestSurveyMainVO">
+		SELECT  *
+		FROM    SURVEY t1
+		LEFT OUTER JOIN SURVEY_PRTCPT t2
+		ON      (t1.SURVEY_SEQ = t2.SURVEY_SEQ)
+		AND     t2.RESIDENT_SEQ = #{residentSeq}
+		WHERE   t1.SURVEY_STATUS = #{surveyType}
+		AND     t1.SURVEY_DEL_TF = 'N'
+		ORDER BY TO_DATE(SUBSTR(t1.SURVEY_PERIOD, 15),'RRRR/MM/DD') ASC
+	</select>
+
+
+
+	<!-- 설문조사 상세정보 - 기본정보 -->
+	<select id="selectSurveyBasicInfo" parameterType="residentSurveyVO" resultMap="surveyVOResultSet">
+		SELECT	*
+		FROM	SURVEY t1
+		LEFT OUTER JOIN SURVEY_PRTCPT t2
+		ON      (t1.SURVEY_SEQ = t2.SURVEY_SEQ)
+		AND		t2.RESIDENT_SEQ = #{residentSeq}
+		WHERE	t1.SURVEY_SEQ = #{surveySeq}
+	</select>
+
+	<!-- 설문조사 상세정보 - 문제정보 -->
+	<select id="selectSurveyQstnInfo" parameterType="Integer" resultMap="surveyQstnResultSet">
+		SELECT	*
+		FROM	SURVEY_QSTN
+		WHERE	SURVEY_SEQ = #{surveySeq}
+	</select>
+
+	<!-- 설문조사 상세정보 - 옵션정보 -->
+	<select id="selectsurveyQstnOptionList" parameterType="list" resultMap="surveyQstnOptionResultSet">
+		SELECT	*
+		FROM	SURVEY_QSTN_OPTION
+		WHERE	SURVEY_QSTN_SEQ IN (
+		<foreach item="item" collection="list" separator=",">
+			#{item.surveyQstnSeq}
+		</foreach>
+		)
+	</select>
+
+	<!-- 설문조사 참여 기본정보 등록 -->
+	<insert id="insertSurveyPrtcpt" parameterType="requestSurveyPrtcpt">
+		INSERT INTO SURVEY_PRTCPT
+		VALUES (
+			SURVEY_PRTCPT_SEQ.NEXTVAL,
+			#{residentSeq},
+			#{surveySeq},
+			SYSDATE
+		)
+		<selectKey keyProperty="surveyPrtcptSeq" resultType="Integer" order="AFTER">
+			SELECT 	SURVEY_PRTCPT_SEQ.CURRVAL
+			FROM 	DUAL
+		</selectKey>
+	</insert>
+
+	<!-- 설문조사 참여 답변 등록 -->
+	<insert id="insertsurveySelected" parameterType="requestSurveySelected">
+		INSERT INTO SURVEY_SELECTED
+		VALUES (
+			SURVEY_SELECTED_SEQ.NEXTVAL,
+			#{surveyPrtcptSeq},
+			#{selectedAnswer},
+			#{surveyQstnSeq}
+		)
+	</insert>
+
+	<!-- 전체 입주 가구 수의 설문 전체 카운트 -->
+	<select id="selectMovedhouseholdCount" resultType="_int" parameterType="_int">
+	    SELECT COUNT(*)
+	    FROM (
+	        SELECT  *
+	        FROM    APT_DETAIL_INFO t1
+	        INNER JOIN RESIDENT t2
+	        ON (t1.APT_DETAIL_INFO_SEQ = t2.APT_DETAIL_INFO_SEQ)
+	        WHERE t2.HOUSEHOLD_AUTH_TYPE = 2
+	        AND t2.LEAVE_TF = 'N'
+	        ) t1
+	    LEFT OUTER JOIN SURVEY_PRTCPT t2
+	    ON (t1.RESIDENT_SEQ = t2.RESIDENT_SEQ)
+	    AND t2.SURVEY_SEQ = #{surveySeq}
+	</select>
+
+	<!-- 설문에 참여한 가구 수의 카운트 -->
+	<select id="selectHouseholdPrtcptCount" resultType="_int" parameterType="_int">
+	    SELECT COUNT(*)
+	    FROM (
+	        SELECT  *
+	        FROM    APT_DETAIL_INFO t1
+	        INNER JOIN RESIDENT t2
+	        ON (t1.APT_DETAIL_INFO_SEQ = t2.APT_DETAIL_INFO_SEQ)
+	        WHERE t2.HOUSEHOLD_AUTH_TYPE = 2
+	        AND t2.LEAVE_TF = 'N'
+	        ) t1
+	    LEFT OUTER JOIN SURVEY_PRTCPT t2
+	    ON (t1.RESIDENT_SEQ = t2.RESIDENT_SEQ)
+	    WHERE t2.SURVEY_SEQ = #{surveySeq}
+	</select>
+
+	<!-- 전체 입주민 수의 설문 전체 카운트 -->
+	<select id="selecttotalResidentCount" resultType="_int" parameterType="_int">
+	     SELECT COUNT(*)
+	    FROM (
+	        SELECT  *
+            FROM    RESIDENT t1
+            WHERE   t1.LEAVE_TF = 'N'
+	        ) t1
+	    LEFT OUTER JOIN SURVEY_PRTCPT t2
+	    ON (t1.RESIDENT_SEQ = t2.RESIDENT_SEQ)
+	    AND t2.SURVEY_SEQ = #{surveySeq}
+	</select>
+
+	<!-- 설문에 참여한 입주민 수의 카운트 -->
+	<select id="selectResidentPrtcptCount" resultType="_int" parameterType="_int">
+	    SELECT COUNT(*)
+	    FROM (
+	        SELECT  *
+            FROM    RESIDENT t1
+            WHERE   t1.LEAVE_TF = 'N'
+	        ) t1
+	    LEFT OUTER JOIN SURVEY_PRTCPT t2
+	    ON (t1.RESIDENT_SEQ = t2.RESIDENT_SEQ)
+	    WHERE t2.SURVEY_SEQ = #{surveySeq}
+	</select>
+
+	<!-- 통계관련 정보 -->
+	<select id="getSelectedStatistics" resultMap="surveyStatisticsVO" parameterType="requestResidentSurveyQstn">
+		SELECT
+				t4.APT_DETAIL_INFO_SEQ,
+				t4.BD_NM,
+				t4.RM_NM,
+				t3.RESIDENT_SEQ,
+				t3.RESIDENT_NM,
+				t2.SELECTED_ANSWER,
+				t5.SURVEY_QSTN_TYPE
+		FROM 	SURVEY_PRTCPT t1
+		INNER JOIN SURVEY_SELECTED t2 ON (t1.SURVEY_PRTCPT_SEQ = t2.SURVEY_PRTCPT_SEQ)
+		INNER JOIN RESIDENT t3 ON (t1.RESIDENT_SEQ = t3.RESIDENT_SEQ)
+		INNER JOIN APT_DETAIL_INFO t4 ON (t3.APT_DETAIL_INFO_SEQ = t4.APT_DETAIL_INFO_SEQ)
+		INNER JOIN SURVEY_QSTN t5 ON (t2.SURVEY_QSTN_SEQ = t5.SURVEY_QSTN_SEQ)
+		WHERE 	t1.SURVEY_SEQ = #{surveySeq}
+		AND		t5.SURVEY_QSTN_TYPE = #{surveyQstnType}
+		AND		t5.SURVEY_QSTN_NUM = #{surveyQstnNum}
+	</select>
+
+	<!-- 옵션 정보 -->
+	<select id="getSurveyQstnOptionList" resultMap="surveyQstnOptionResultSet" parameterType="requestResidentSurveyQstn">
+		SELECT  *
+        FROM    SURVEY_QSTN t1
+        INNER JOIN SURVEY_QSTN_OPTION t2
+        ON (t1.SURVEY_QSTN_SEQ = t2.SURVEY_QSTN_SEQ)
+        WHERE 	t1.SURVEY_SEQ = #{surveySeq}
+        AND     t1.SURVEY_QSTN_NUM = #{surveyQstnNum}
+	</select>
+
+
+</mapper>

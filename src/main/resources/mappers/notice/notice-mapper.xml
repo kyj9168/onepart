@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+ <mapper namespace="notice">
+ 		<resultMap type="notice" id="noticeResultSet">
+ 			<id property="noticeSeq" column="NOTICE_SEQ"></id>
+ 			<result property="noticeTitle" column="NOTICE_TITLE"/>
+ 			<result property="noticeContent" column="NOTICE_CONTENT"/>
+ 			<result property="noticeEnrollDt" column="NOTICE_ENROLL_DT"/>
+ 		</resultMap>
+ 	 	
+ 		<select id="selectNoticeVo" resultType="com.kh.notice.model.vo.Notice">
+ 			SELECT NOTICE_SEQ, NOTICE_TITLE, NOTICE_CONTENT, NOTICE_ENROLL_DT
+ 			FROM NOTICE
+ 			ORDER BY NOTICE SEQ
+ 		</select>
+ 		<insert id="insertNoticeVo" parameterType="NoticeVo">
+ 			INSERT INTO NOTICE
+ 			VALUES(NOTICE_SEQ.NEXTVAL, #{noticeTitle}, #{noticeContent}, TO_DATE(#{noticeEnrollDt}), 'YYYY/MM/DD')   
+ 		</insert>
+	 
+ </mapper>

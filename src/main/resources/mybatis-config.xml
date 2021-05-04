@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<configuration>
+	<settings>
+		<setting name="jdbcTypeForNull" value="NULL" />
+	</settings>
+
+	<typeAliases>
+		<!-- account -->
+		<typeAlias type="com.kh.onepart.account.model.vo.ResidentVO" alias="ResidentVO" />
+		<typeAlias type="com.kh.onepart.account.model.vo.ManagerVO" alias="ManagerVO" />
+		<typeAlias type="com.kh.onepart.account.model.vo.HouseholdVo" alias="HouseholdVo" />
+
+		<!-- messenger -->
+		<typeAlias type="com.kh.onepart.resident.messenger.model.vo.RequestMessengerVO" alias="requestMessengerVO" />
+		<typeAlias type="com.kh.onepart.resident.messenger.model.vo.RequestImgVO" alias="requestImgVO" />
+		<typeAlias type="com.kh.onepart.resident.messenger.model.vo.RequestAttachVO" alias="requestAttachVO" />
+
+
+		<!-- resident -->
+		<typeAlias type="com.kh.onepart.resident.warm.open_chatting.model.vo.OpenChatVO" alias="OpenChatVO" />
+		<typeAlias type="com.kh.onepart.resident.warm.open_chatting.model.vo.OpenChatMemberVO" alias="OpenChatMemberVO" />
+		<typeAlias type="com.kh.onepart.resident.warm.open_chatting.model.vo.OpenChatCommVO" alias="OpenChatCommVO" />
+		<typeAlias type="com.kh.onepart.resident.warm.open_chatting.model.vo.OpenChatNoticeVO" alias="OpenChatNoticeVO" />
+		<typeAlias type="com.kh.onepart.resident.my_home.my_car.model.vo.MyCar" alias="MyCar" />
+		<typeAlias type="com.kh.onepart.resident.my_home.visit_car.model.vo.VisitCarVo" alias="VisitCarVO" />
+		<typeAlias type="com.kh.onepart.resident.convenience.complaint.model.vo.ComplaintVo" alias="ComplaintVo"/>
+		<typeAlias type="com.kh.onepart.resident.convenience.reservate_facility.model.vo.Reservation" alias="reservation" />
+		<typeAlias type="com.kh.onepart.resident.convenience.reservate_facility.model.vo.FacReservation" alias="facReservation" />
+		<typeAlias type="com.kh.onepart.resident.convenience.reservate_facility.model.vo.FacSeatInfo" alias="facSeatInfo" />
+		<typeAlias type="com.kh.onepart.resident.my_apartment.survey.model.vo.RequestSurveyPrtcpt" alias="requestSurveyPrtcpt"/>
+		<typeAlias type="com.kh.onepart.resident.my_apartment.survey.model.vo.RequestSurveySelected" alias="requestSurveySelected"/>
+		<typeAlias type="com.kh.onepart.resident.my_apartment.survey.model.vo.RequestSurveyMainVO" alias="requestSurveyMainVO"/>
+		<typeAlias type="com.kh.onepart.resident.my_apartment.survey.model.vo.SurveyVO" alias="residentSurveyVO"/>
+		<typeAlias type="com.kh.onepart.resident.my_apartment.survey.model.vo.RequestSurveyQstn" alias="requestResidentSurveyQstn"/>
+
+		<typeAlias type="com.kh.onepart.resident.superintend_vote.model.vo.GeneralVote" alias="GeneralVote"/>
+		<typeAlias type="com.kh.onepart.resident.superintend_vote.model.vo.GeneralVoteCandidate" alias="GeneralVoteCandidate"/>
+		<typeAlias type="com.kh.onepart.resident.superintend_vote.model.vo.GeneralVoteBdNm" alias="GeneralVoteBdNm"/>
+		<typeAlias type="com.kh.onepart.resident.superintend_vote.model.vo.ElectionVote" alias="ElectionVote"/>
+		<typeAlias type="com.kh.onepart.resident.superintend_vote.model.vo.VoteList" alias="VoteList"/>
+		<typeAlias type="com.kh.onepart.resident.superintend_vote.model.vo.Career" alias="Career"/>
+		<typeAlias type="com.kh.onepart.resident.superintend_vote.model.vo.ElectionVoteCandidate" alias="ElectionVoteCandidate"/>
+		<typeAlias type="com.kh.onepart.resident.superintend_vote.model.vo.ApartDetailInfo" alias="ApartDetailInfo"/>
+		<typeAlias type="com.kh.onepart.resident.superintend_vote.model.vo.VotePrtcpt" alias="VotePrtcpt"/>
+		<typeAlias type="com.kh.onepart.resident.superintend_vote.model.vo.VoteSelected" alias="VoteSelected"/>
+		<typeAlias type="com.kh.onepart.resident.superintend_vote.model.vo.ElectoralRegister" alias="ElectoralRegister"/>
+		<typeAlias type="com.kh.onepart.resident.superintend_vote.model.vo.GeneralVoteBdNm" alias="GeneralVoteBdNm"/>
+		<typeAlias type="com.kh.onepart.resident.superintend_vote.model.vo.CandidatePercent" alias="CandidatePercent"/>
+		<typeAlias type="com.kh.onepart.resident.my_apartment.vote.model.vo.VoteList" alias="vote_VoteList"/>
+		<typeAlias type="com.kh.onepart.resident.my_apartment.vote.model.vo.GeneralVoteCandidate" alias="vote_GeneralVoteCandidate"/>
+		<typeAlias type="com.kh.onepart.resident.my_apartment.vote.model.vo.GeneralVote" alias="vote_GeneralVote"/>
+		<typeAlias type="com.kh.onepart.resident.my_apartment.vote.model.vo.ElectionVote" alias="vote_ElectionVote"/>
+		<typeAlias type="com.kh.onepart.resident.my_apartment.vote.model.vo.ElectionVoteCandidate" alias="vote_ElectionVoteCandidate"/>
+		<typeAlias type="com.kh.onepart.resident.my_apartment.vote.model.vo.VotePrtcpt" alias="vote_VotePrtcpt"/>
+		<typeAlias type="com.kh.onepart.resident.my_apartment.vote.model.vo.VoteSelected" alias="vote_VoteSelected"/>
+		<typeAlias type="com.kh.onepart.resident.my_apartment.vote.model.vo.Image" alias="vote_Image"/>
+		<typeAlias type="com.kh.onepart.resident.my_apartment.vote.model.vo.Career" alias="vote_Career"/>
+		<typeAlias type="com.kh.onepart.resident.my_apartment.vote.model.vo.CandidatePercent" alias="vote_CandidatePercent"/>
+		<typeAlias type="com.kh.onepart.resident.warm.open_chatting.model.vo.OpenChatNoticeVO" alias="OpenChatNoticeVO"/>
+
+		<typeAlias type="com.kh.onepart.resident.residentMeeting.vo.ResidentMeetingVO" alias="residentMeetingVO"/>
+		<typeAlias type="com.kh.onepart.resident.my_home.maintenance_cost.model.vo.CostHistory" alias="CostHistory"/>
+
+		<!-- Manager -->
+		<typeAlias type="com.kh.onepart.manager.survey.model.vo.SurveyVO" alias="SurveyVO"/>
+		<typeAlias type="com.kh.onepart.manager.resident_manage.model.vo.ResidentManageVo" alias="ResidentManageVo"/>
+		<typeAlias type="com.kh.onepart.manager.notice.model.vo.NoticeManagerVo" alias="NoticeManagerVo"/>
+		<typeAlias type="com.kh.onepart.manager.survey.model.vo.RequestSurveyVO" alias="RequestSurveyVO"/>
+		<typeAlias type="com.kh.onepart.manager.survey.model.vo.RequestSurveyQstn" alias="RequestSurveyQstn"/>
+    	<typeAlias type="com.kh.onepart.manager.facility.model.vo.Reservation" alias="manager_reservation"/>
+    	<typeAlias type="com.kh.onepart.manager.facility.model.vo.FacReservation" alias="manager_facReservation"/>
+    	<typeAlias type="com.kh.onepart.manager.facility.model.vo.Image" alias="manager_img"/>
+    	<typeAlias type="com.kh.onepart.manager.facility.model.vo.FacSeatInfo" alias="manager_facSeatInfo" />
+    	<typeAlias type="com.kh.onepart.manager.employee_manage.model.vo.EmployeeManageVO" alias="EmployeeManage" />
+    	<typeAlias type="com.kh.onepart.manager.visit_car.model.vo.ManagerVisitCarVo" alias="manager_VisitCarVo" />
+		<typeAlias type="com.kh.onepart.manager.car_manage.model.vo.ResidentCarVO" alias="ResidentCarVO" />
+		<typeAlias type="com.kh.onepart.manager.employee_manage.model.vo.EmployeeManageVO" alias="EmployeeManageVO" />
+		<typeAlias type="com.kh.onepart.manager.vote.model.vo.VoteList" alias="manager_voteList" />
+		<typeAlias type="com.kh.onepart.manager.vote.model.vo.GeneralVote" alias="manager_generalVote" />
+		<typeAlias type="com.kh.onepart.manager.vote.model.vo.GeneralVoteCandidate" alias="manager_generalVoteCandidate" />
+		<typeAlias type="com.kh.onepart.manager.vote.model.vo.ElectionVote" alias="manager_ElectionVote" />
+		<typeAlias type="com.kh.onepart.manager.vote.model.vo.ElectionVoteCandidate" alias="manager_ElectionVoteCandidate" />
+		<typeAlias type="com.kh.onepart.manager.vote.model.vo.Superintend" alias="manager_Superintend" />
+		<typeAlias type="com.kh.onepart.manager.vote.model.vo.CandidatePercent" alias="manager_CandidatePercent" />
+		<typeAlias type="com.kh.onepart.manager.maintenance_cost.model.vo.CostHistory" alias="manager_CostHistory" />
+		<typeAlias type="com.kh.onepart.manager.maintenance_cost.model.vo.CostExcel" alias="manager_CostExcel" />
+
+
+	</typeAliases>
+
+	<mappers>
+		<!-- account -->
+		<mapper resource="mappers/account/account-mapper.xml" />
+
+
+		<!-- messenger -->
+		<mapper resource="mappers/messenger/messenger-mapper.xml" />
+
+
+		<!-- resident -->
+		<mapper resource="mappers/openChat/openChat-mapper.xml" />
+		<mapper resource="mappers/myCar/myCar-mapper.xml" />
+		<mapper resource="mappers/openChat/openChatMember-mapper.xml" />
+		<mapper resource="mappers/openChat/openChatComm-mapper.xml" />
+		<mapper resource="mappers/openChat/openChatNotice-mapper.xml" />
+		<mapper resource="mappers/reservation/reservation-mapper.xml" />
+		<mapper resource="mappers/resident/survey/resident-survey-mapper.xml" />
+		<mapper resource="mappers/resident/superintendVote/resident-superintendVote-mapper.xml" />
+		<mapper resource="mappers/resident/visitCar/resident-visitCar-mapper.xml" />
+		<mapper resource="mappers/resident/vote/vote-mapper.xml" />
+		<mapper resource="mappers/resident/residentMeeting/residentMeeting-mapper.xml" />
+		<mapper resource="mappers/resident/main/main-mapper.xml" />
+		<mapper resource="mappers/resident/maintenanceCost/maintenanceCost-mapper.xml" />
+
+
+		<!-- Manager -->
+		<mapper resource="mappers/manager/main/main-mapper.xml"/>
+		<mapper resource="mappers/manager/notice/notice-mapper.xml"/>
+		<mapper resource="mappers/manager/resident_manage/resident-manage-mapper.xml"/>
+		<mapper resource="mappers/manager/survey/manager-survey-mapper.xml" />
+		<mapper resource="mappers/manager/Faclilty/manager-faclilty-mapper.xml" />
+		<mapper resource="mappers/manager/Faclilty/manager-faclilty-mapper.xml" />
+		<mapper resource="mappers/manager/residentCar/residentCar-mapper.xml" />
+		<mapper resource="mappers/manager/EmployeeManage/EmployeeManage-mapper.xml" />
+		<mapper resource="mappers/manager/visitCar/manager-visitCar-mapper.xml" />
+		<mapper resource="mappers/manager/vote/manager-vote-mapper.xml" />
+		<mapper resource="mappers/manager/maintenanceCost/manager-maintenanceCost-mapper.xml" />
+
+
+		<!-- Batch -->
+		<mapper resource="mappers/batch/batch-mapper.xml" />
+
+
+	</mappers>
+</configuration>

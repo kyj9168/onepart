@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/mvc"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:task="http://www.springframework.org/schema/task"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc https://www.springframework.org/schema/mvc/spring-mvc.xsd
+		http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
+		http://www.springframework.org/schema/task
+        http://www.springframework.org/schema/task/spring-task-3.0.xsd">
+
+	<!-- DispatcherServlet Context: defines this servlet's request-processing infrastructure -->
+
+	<!-- Enables the Spring MVC @Controller programming model -->
+	<annotation-driven />
+	<task:annotation-driven />
+
+	<!-- Handles HTTP GET requests for /resources/** by efficiently serving up static resources in the ${webappRoot}/resources directory -->
+	<resources mapping="/resources/**" location="/resources/" />
+
+	<!-- Resolves views selected for rendering by @Controllers to .jsp resources in the /WEB-INF/views directory -->
+	<beans:bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<beans:property name="prefix" value="/WEB-INF/views/" />
+		<beans:property name="suffix" value=".jsp" />
+	</beans:bean>
+
+	<context:component-scan base-package="com.kh.onepart"/>
+
+	<beans:bean id="jsonView" class="net.sf.json.spring.web.servlet.view.JsonView"></beans:bean>
+
+	<!-- ajax를 위한 viewResolver설정 -->
+	<!-- 위에 설정한 view resolver는 기존에 있는 jsp에 대해 view를 보여주는 템플릿 뷰 -->
+	<!-- 여기 설정한 BeanNameBiewResolver는 없는 자원에 대해서 논리적 이름을 가지고 view를 지정 -->
+	<!-- 라이브러리 등록 필수 json-lib-ext-spring -->
+	<beans:bean id="viewResolver" class="org.springframework.web.servlet.view.BeanNameViewResolver">
+	   <beans:property name="order" value="1"/>
+	</beans:bean>
+
+	<!-- Interceptor -->
+	<beans:bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <beans:property name="prefix" value="/WEB-INF/views/" />
+        <beans:property name="suffix" value=".jsp"/>
+    </beans:bean>
+
+	<!-- 인터셉터 객체 생성 -->
+    <beans:bean id="onepartInterceptor" class="com.kh.onepart.interceptor.OnepartInterceptor">
+    </beans:bean>
+    <interceptors>
+        <interceptor>
+            <mapping path="/**"/>
+            <beans:ref bean="onepartInterceptor"/>
+        </interceptor>
+    </interceptors>
+
+  	<!-- 동적 프록시 사용 설정 -->
+	<aop:aspectj-autoproxy proxy-target-class="true"/>
+
+	<!-- 파일 업로드를 하기 위해 bean 등록 -->
+	<beans:bean id="multipartResolver"
+		class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<beans:property name="maxUploadSize" value="10000000"/>
+	</beans:bean>
+
+	<!-- 스프링 웹소켓 -->
+	<beans xmlns="http://www.springframework.org/schema/beans"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xmlns:websocket="http://www.springframework.org/schema/websocket"
+		xsi:schemaLocation="
+			http://www.springframework.org/schema/beans
+			http://www.springframework.org/schema/beans/spring-beans.xsd
+			http://www.springframework.org/schema/websocket
+			http://www.springframework.org/schema/websocket/spring-websocket.xsd">
+
+		<websocket:handlers>
+			<websocket:mapping path="/menuOpenChatRoom" handler="openChatRoom"/>
+			<websocket:sockjs/>
+		</websocket:handlers>
+
+		<websocket:handlers>
+			<websocket:mapping path="/messenger" handler="messengerWebSocket"/>
+			<websocket:sockjs/>
+		</websocket:handlers>
+
+		<bean id="openChatRoom" class="com.kh.onepart.resident.warm.open_chatting.controller.SpringChatWebsocket"/>
+		<bean id="messengerWebSocket" class="com.kh.onepart.resident.messenger.controller.MessengerWebSocket"/>
+	</beans>
+
+
+</beans:beans>

@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="reservation">
+	<resultMap type="reservation" id="reservationResultSet">
+		<id property="facSeq" column="FAC_SEQ"></id>
+		<result property="facNm" column="FAC_NM"/>
+		<result property="facPosition" column="FAC_POSITION"/>
+		<result property="facAvailWeekOfDay" column="FAC_AVAIL_WEEK_OF_DAY"/>
+		<result property="facAvailTm" column="FAC_AVAIL_TM"/>
+		<result property="facDefaultFee" column="FAC_DEFAULT_FEE"/>
+		<result property="facMaxHead" column="FAC_MAX_HEAD"/>
+		<result property="facSquareMeasure" column="FAC_SQUARE_MEASURE"/>
+		<result property="qrImgPath" column="QR_IMG_PATH"/>
+		<result property="facDetailInfo" column="FAC_DETAIL_INFO"/>
+		<result property="facRsrvInfo" column="FAC_RSRV_INFO"/>
+		<result property="facUseInfo" column="FAC_USE_INFO"/>
+		<result property="facCaution" column="FAC_CAUTION"/>
+		<result property="facType" column="FAC_TYPE"/>
+		<result property="facDelTf" column="FAC_DEL_TF"/>
+		<result property="fileType" column="FILE_TYPE"/>
+		<result property="originNm" column="ORIGIN_NM"/>
+		<result property="changeNm" column="CHANGE_NM"/>
+		<result property="filePath" column="FILE_PATH"/>
+		<result property="uploadDt" column="UPLOAD_DT"/>
+		<result property="messengerSeq" column="MESSENGER_SEQ"/>
+		<result property="openChatCommSeq" column="OPEN_CHAT_COMM_SEQ"/>
+	</resultMap>
+
+	<resultMap type="facReservation" id="facReservationResultSet">
+		<id property="facRsrvSeq" column="FAC_RSRV_SEQ"/>
+		<result property="facSeq" column="FAC_SEQ"/>
+		<result property="propUseDt" column="PROP_USE_DT"/>
+		<result property="propUseTm" column="PROP_USE_TM"/>
+		<result property="residentSeq" column="RESIDENT_SEQ"/>
+		<result property="propStatus" column="PROP_STATUS"/>
+		<result property="toalFee" column="TOAL_FEE"/>
+		<result property="useHeadCount" column="USE_HEAD_COUNT"/>
+		<result property="usePurpose" column="USE_PURPOSE"/>
+		<result property="etc" column="ETC"/>
+		<result property="rsrvGroupType" column="RSRV_GROUP_TYPE"/>
+		<result property="rsrvNm" column="RSRV_NM"/>
+		<result property="enrollDt" column="ENROLL_DT"/>
+		<result property="propSeat" column="PROP_SEAT"/>
+		<result property="rsrvPhone" column="RSRV_PHONE"/>
+		<result property="facNm" column="FAC_NM"/>
+		<result property="facPositionNum" column="FAC_POSITION_NUM"/>
+	</resultMap>
+
+	<resultMap type="facSeatInfo" id="facSeatInfoResultSet">
+		<id property="facSeatSeq" column="FAC_SEAT_SEQ"/>
+		<result property="facSeatNum" column="FAC_SEAT_NUM"/>
+		<result property="facSeq" column="FAC_SEQ"/>
+		<result property="facPositionNum" column="FAC_POSITION_NUM"/>
+		<result property="facSeatMaxNum" column="FAC_SEAT_MAX_NUM"/>
+	</resultMap>
+
+
+	<select id="selectAllReservation" resultMap="reservationResultSet">
+		SELECT *
+		FROM FAC F
+		JOIN IMAGE I ON (F.FAC_SEQ = I.FAC_SEQ)
+		WHERE F.FAC_DEL_TF = 'N'
+		AND I.IMG_TYPE = 1
+	</select>
+
+	<select id="selectOneReservation" resultMap="reservationResultSet" parameterType="_int">
+		SELECT *
+		FROM FAC F
+		JOIN IMAGE I ON (F.FAC_SEQ = I.FAC_SEQ)
+		WHERE F.FAC_DEL_TF = 'N'
+		AND F.FAC_SEQ = #{facSeq}
+		AND I.IMG_TYPE = 1
+	</select>
+
+	<insert id="insertReservation" parameterType="facReservation">
+		INSERT INTO FAC_RSRV
+		VALUES (FAC_RSRV_SEQ.NEXTVAL, #{facSeq}, TO_DATE(#{propUseDt}, 'YYYY/MM/DD'), #{propUseTm}, #{residentSeq}, 1, #{toalFee}, #{useHeadCount}, #{usePurpose}, #{etc}, #{rsrvGroupType}, #{rsrvNm}, SYSDATE, NULL, #{rsrvPhone})
+	</insert>
+
+	<select id="selectUserReservation" resultMap="facReservationResultSet" parameterType="_int">
+		SELECT R.FAC_RSRV_SEQ, R.FAC_SEQ, TO_CHAR(R.PROP_USE_DT, 'YYYY/MM/DD') PROP_USE_DT, R.PROP_USE_TM, R.RESIDENT_SEQ, R.PROP_STATUS, R.TOAL_FEE, R.USE_HEAD_COUNT, R.USE_PURPOSE,
+        		R.ETC, R.RSRV_GROUP_TYPE, R.RSRV_NM, R.ENROLL_DT, R.PROP_SEAT, R.RSRV_PHONE, F.FAC_NM
+		FROM FAC_RSRV R
+		JOIN FAC F ON (R.FAC_SEQ = F.FAC_SEQ)
+		WHERE R.RESIDENT_SEQ = #{residentSeq}
+	</select>
+
+	<delete id="deleteUserReservation" parameterType="_int">
+		DELETE FAC_RSRV
+		WHERE FAC_RSRV_SEQ = #{facRsrvSeq}
+	</delete>
+
+	<select id="selectDdayReservation" resultMap="facReservationResultSet" parameterType="facReservation">
+		SELECT PROP_USE_TM
+		FROM FAC_RSRV
+		WHERE FAC_SEQ = #{facSeq}
+		AND PROP_USE_DT = TO_DATE(#{propUseDt}, 'YYYY/MM/DD')
+		AND PROP_STATUS = 2
+	</select>
+
+	<select id="selectOneReservationSeatList" parameterType="_int" resultMap="facSeatInfoResultSet">
+		SELECT *
+		FROM FAC_SEAT
+		WHERE FAC_SEQ = #{facSeq}
+	</select>
+
+	<select id="selectOnePropSeatList" parameterType="_int" resultMap="facReservationResultSet">
+		SELECT *
+		FROM FAC_RSRV R
+		JOIN FAC_SEAT S ON (S.FAC_SEAT_SEQ = R.PROP_SEAT)
+		JOIN FAC F ON (R.FAC_SEQ = F.FAC_SEQ)
+		WHERE R.FAC_SEQ = #{facSeq}
+		AND TO_DATE(TO_CHAR(PROP_USE_DT, 'YYYYMMDD'), 'YYYY/MM/DD') = TO_DATE(TO_CHAR(SYSDATE, 'YYYYMMDD'), 'YYYY/MM/DD')
+	</select>
+
+	<select id="selectSeatPrimarykey" parameterType="facSeatInfo" resultType="_int">
+		SELECT FAC_SEAT_SEQ
+		FROM FAC_SEAT
+		WHERE FAC_SEQ = #{facSeq}
+		AND FAC_POSITION_NUM = #{facPositionNum}
+	</select>
+
+	<insert id="insertReservationSeat" parameterType="facReservation">
+		INSERT INTO FAC_RSRV
+		VALUES (FAC_RSRV_SEQ.NEXTVAL, #{facSeq}, SYSDATE, '좌석', #{residentSeq}, 2, 0, 1, '좌석',
+				'좌석', 1, #{rsrvNm}, SYSDATE, #{propSeat}, #{rsrvPhone})
+	</insert>
+
+</mapper>

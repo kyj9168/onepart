@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Account">
+
+	<resultMap type="com.kh.onepart.account.model.vo.ResidentVO" id="residentVOResultSet">
+		<id property="residentSeq" column="RESIDENT_SEQ"/>
+		<result property="residentId" column="RESIDENT_ID"/>
+		<result property="residentPwd" column="RESIDENT_PWD"/>
+		<result property="residentNm" column="RESIDENT_NM"/>
+		<result property="residentPhone" column="RESIDENT_PHONE"/>
+		<result property="residentEmail" column="RESIDENT_EMAIL"/>
+		<result property="aptDetailInfoSeq" column="APT_DETAIL_INFO_SEQ"/>
+		<result property="householdAuthType" column="HOUSEHOLD_AUTH_TYPE"/>
+		<result property="residentEnrollDt" column="RESIDENT_ENROLL_DT"/>
+		<result property="leaveTf" column="LEAVE_TF"/>
+		<result property="aptAuthCd" column="APT_AUTH_CD"/>
+		<result property="leaveDt" column="LEAVE_DT"/>
+		<result property="residentBirth" column="RESIDENT_BIRTH"/>
+		<result property="confirmTf" column="CONFIRM_TF"/>
+		<result property="residentGender" column="RESIDENT_GENDER"/>
+		<result property="residentNm2" column="RESIDENT_NM"/>
+	</resultMap>
+
+	<resultMap type="com.kh.onepart.account.model.vo.ManagerVO" id="managerVOResultSet">
+		<id property="managerSeq" column="MANAGER_SEQ"/>
+		<result property="managerId" column="MANAGER_ID"/>
+		<result property="managerPwd" column="MANAGER_PWD"/>
+		<result property="managerNm" column="MANAGER_NM"/>
+		<result property="managerPhone" column="MANAGER_PHONE"/>
+		<result property="managerEmail" column="MANAGER_EMAIL"/>
+		<result property="deptCd" column="DEPT_CD"/>
+		<result property="managerEnrollDt" column="MANAGER_ENROLL_DT"/>
+		<result property="managerLeaveTf" column="MANAGER_LEAVE_TF"/>
+		<result property="managerLeaveDt" column="MANAGER_LEAVE_DT"/>
+	</resultMap>
+
+	<resultMap type="HouseholdVo" id="householdVoResultSet">
+		<result property="aptDetailInfoSeq" column="APT_DETAIL_INFO_SEQ"/>
+		<result property="residentSeq" column="RESIDENT_SEQ"/>
+
+	</resultMap>
+
+	<select id="selectCheckLogin" resultMap="residentVOResultSet" parameterType="ResidentVO">
+		SELECT	*
+		FROM	RESIDENT
+		WHERE	RESIDENT_ID = #{residentId}
+		AND		RESIDENT_PWD = #{residentPwd}
+		AND		LEAVE_TF = 'N'
+	</select>
+	 <!-- 암호화된 비밀번호 로그인용(조회용) 메소드 -->
+   <select id="selectPwd" parameterType="java.lang.String" resultType="java.lang.String">
+	   	SELECT RESIDENT_PWD
+	   	FROM RESIDENT
+	   	WHERE RESIDENT_ID = #{residentId}
+	   	AND LEAVE_TF = 'N'
+   </select>
+   <!--  비밀번호 일치 시 회원 정보 조회용 메소드 -->
+   <select id="selectLoginUser" resultMap="residentVOResultSet" parameterType="ResidentVO">
+	   	SELECT RESIDENT_SEQ, RESIDENT_ID, RESIDENT_NM, RESIDENT_PHONE, RESIDENT_EMAIL
+		   	, APT_DETAIL_INFO_SEQ, HOUSEHOLD_AUTH_TYPE, RESIDENT_ENROLL_DT, LEAVE_TF, APT_AUTH_CD,
+		   	LEAVE_DT, RESIDENT_BIRTH, CONFIRM_TF, RESIDENT_GENDER
+	   	FROM RESIDENT
+	   	WHERE RESIDENT_ID = #{residentId}
+	   	AND LEAVE_TF = 'N'
+   </select>
+	<!-- 회원 가입용 메소드 -->
+	<insert id="insertResident" parameterType="ResidentVO">
+      INSERT INTO RESIDENT (RESIDENT_SEQ, RESIDENT_ID, RESIDENT_PWD, RESIDENT_NM, RESIDENT_PHONE
+      	, RESIDENT_EMAIL, APT_DETAIL_INFO_SEQ, HOUSEHOLD_AUTH_TYPE, RESIDENT_ENROLL_DT, LEAVE_TF
+      	, APT_AUTH_CD, RESIDENT_BIRTH, CONFIRM_TF, RESIDENT_GENDER )
+      VALUES(
+         RESIDENT_SEQ.NEXTVAL, #{residentId}, #{residentPwd}, #{residentNm}, #{residentPhone}
+         , #{residentEmail}, #{aptDetailInfoSeq}, #{householdAuthType}, SYSDATE, DEFAULT
+         , DEFAULT, #{residentBirth}, DEFAULT, #{residentGender}
+      )
+
+       <selectKey keyProperty="residentSeq" resultType="Integer" order="AFTER">
+         SELECT RESIDENT_SEQ.CURRVAL FROM DUAL
+      </selectKey>
+   </insert>
+
+   <!-- House Hold 값 입력 메소드 -->
+   <insert id="insertHouseHold" parameterType="HouseholdVo">
+   INSERT INTO HOUSEHOLD
+   VALUES(#{aptDetailInfoSeq}, #{residentSeq})
+
+   </insert>
+
+
+   <!--  아이디 찾기용 메소드 -->
+   <select id="selectFindId" resultMap="residentVOResultSet" parameterType="ResidentVO">
+	   	SELECT RESIDENT_SEQ, RESIDENT_ID, RESIDENT_NM, RESIDENT_PHONE, RESIDENT_EMAIL
+	   	FROM RESIDENT
+	   	WHERE
+	   	<choose>
+	   		<when test="residentNm != ''">
+	   		RESIDENT_NM = #{residentNm}
+		   	AND RESIDENT_PHONE = #{residentPhone}
+		   	AND	LEAVE_TF = 'N'
+	   		</when>
+	   	<!-- 	<when test="residentNm == ''">
+	   		RESIDENT_NM = #{residentNm2}
+			RESIDENT_EMAIL = #{residentEmail}
+	   		</when> -->
+			<otherwise>
+			RESIDENT_NM = #{residentNm2}
+			AND RESIDENT_EMAIL = #{residentEmail}
+			AND	LEAVE_TF = 'N'
+			</otherwise>
+	   	</choose>
+   </select>
+
+   <!-- 비밀번호 찾기용 정보조회 메소드 -->
+   <select id="selectFindPwd" resultMap="residentVOResultSet" parameterType="ResidentVO">
+	   	SELECT RESIDENT_SEQ, RESIDENT_ID, RESIDENT_NM
+	   	FROM RESIDENT
+	   	WHERE RESIDENT_ID = #{residentId}
+	   	AND RESIDENT_NM = #{residentNm}
+	   	AND RESIDENT_PHONE = #{residentPhone}
+	   	AND	LEAVE_TF = 'N'
+   </select>
+
+   <!-- 비밀번호 재설정용 메소드 -->
+   <update id="setNewPwd" parameterType="ResidentVO">
+      UPDATE RESIDENT
+      SET RESIDENT_PWD = #{residentPwd}
+      WHERE RESIDENT_ID = #{residentId}
+   </update>
+
+   <!-- 관리자 암호화된 비밀번호 로그인용(조회용) 메소드 -->
+   <select id="selectManagerPwd" parameterType="java.lang.String" resultType="java.lang.String">
+	   	SELECT MANAGER_PWD
+	   	FROM MANAGER
+	   	WHERE MANAGER_ID = #{managerId}
+	   	AND MANAGER_LEAVE_TF = 'N'
+   </select>
+
+
+ <!--  관리자 비밀번호 일치 시 회원 정보 조회용 메소드 -->
+   <select id="selectManagerLoginUser" resultMap="managerVOResultSet" parameterType="ManagerVO">
+	   	SELECT MANAGER_SEQ,MANAGER_NM,DEPT_CD,MANAGER_ID,MANAGER_PHONE
+	   	,MANAGER_EMAIL,MANAGER_ENROLL_DT,MANAGER_LEAVE_DT,MANAGER_LEAVE_TF
+	   	FROM MANAGER
+	   	WHERE MANAGER_ID = #{managerId}
+	   	AND MANAGER_LEAVE_TF = 'N'
+   </select>
+
+	<!-- 아이디 중복 체크 메소드 -->
+	<select id="idcheck" parameterType="String" resultType="Integer">
+		SELECT COUNT(*) FROM RESIDENT
+		WHERE RESIDENT_ID = #{residentId}
+	</select>
+
+
+	<!-- 회원정보수정에서 휴대전화번호 업데이트 메소드 -->
+   <update id="updatePhone" parameterType="ResidentVO">
+      UPDATE RESIDENT
+      SET RESIDENT_PHONE = #{residentPhone}
+      WHERE RESIDENT_ID = #{residentId}
+   </update>
+
+   	<!-- 회원정보수정에서 이메일주소 업데이트 메소드 -->
+   <update id="updateEmail" parameterType="ResidentVO">
+      UPDATE RESIDENT
+      SET RESIDENT_EMAIL = #{residentEmail}
+      WHERE RESIDENT_ID = #{residentId}
+   </update>
+
+
+</mapper>

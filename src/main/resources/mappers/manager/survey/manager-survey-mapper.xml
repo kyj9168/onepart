@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ManagerSurvey">
+
+	<resultMap type="com.kh.onepart.manager.survey.model.vo.SurveyVO" id="surveyVOResultSet">
+		<id property="surveySeq" column="SURVEY_SEQ"/>
+		<result property="surveyTitle" column="SURVEY_TITLE"/>
+		<result property="surveyStatus" column="SURVEY_STATUS"/>
+		<result property="surveyType" column="SURVEY_TYPE"/>
+		<result property="surveySimpleIntro" column="SURVEY_SIMPLE_INTRO"/>
+		<result property="surveyPeriod" column="SURVEY_PERIOD"/>
+		<result property="surveyEnrollDt" column="SURVEY_ENROLL_DT"/>
+		<result property="surveyDelTf" column="SURVEY_DEL_TF"/>
+	</resultMap>
+
+	<resultMap type="com.kh.onepart.manager.survey.model.vo.SurveyQstn" id="surveyQstnResultSet">
+		<id property="surveyQstnSeq" column="SURVEY_QSTN_SEQ"/>
+		<result property="surveySeq" column="SURVEY_SEQ"/>
+		<result property="surveyQstnNum" column="SURVEY_QSTN_NUM"/>
+		<result property="surveyQstnTitle" column="SURVEY_QSTN_TITLE"/>
+		<result property="surveyQstnNece" column="SURVEY_QSTN_NECE"/>
+		<result property="surveyQstnType" column="SURVEY_QSTN_TYPE"/>
+	</resultMap>
+
+	<resultMap type="com.kh.onepart.manager.survey.model.vo.SurveyQstnOption" id="surveyQstnOptionResultSet">
+		<id property="surveyQstnOptionSeq" column="SURVEY_QSTN_OPTION_SEQ"/>
+		<result property="surveyQstnOptionNum" column="SURVEY_QSTN_OPTION_NUM"/>
+		<result property="surveyQstnOptionContent" column="SURVEY_QSTN_OPTION_CONTENT"/>
+		<result property="surveyQstnSeq" column="SURVEY_QSTN_SEQ"/>
+	</resultMap>
+
+
+
+	<!-- 설문조사 리스트 총 개수 -->
+	<select id="selectSurveyListCount" resultType="_int">
+		SELECT  COUNT(*)
+		FROM    SURVEY
+		WHERE   SURVEY_DEL_TF = 'N'
+	</select>
+
+	<!-- 설문조사 리스트 -->
+	<select id="selectSurveyList" resultMap="surveyVOResultSet">
+		SELECT  *
+		FROM    SURVEY
+		WHERE   SURVEY_DEL_TF = 'N'
+		ORDER BY SURVEY_ENROLL_DT DESC
+	</select>
+
+
+
+
+	<!-- 설문조사 검색 -->
+	<select id="selectSearchSurveyList" parameterType="surveyVO" resultMap="surveyVOResultSet">
+		SELECT  *
+		FROM SURVEY
+		<where>
+		<if test="surveyTitle != ''">
+			SURVEY_TITLE LIKE '%' || #{surveyTitle} || '%'
+		</if>
+		<if test="surveyStatus != 0">
+			AND SURVEY_TYPE = #{surveyType}
+		</if>
+			AND SURVEY_DEL_TF = 'N'
+		</where>
+	</select>
+
+	<!-- 설문조사 등록 - INSERT SURVEY -->
+	<insert id="insertSurvey" parameterType="RequestSurveyVO">
+		INSERT INTO SURVEY
+		VALUES(
+			SURVEY_SEQ.NEXTVAL,
+			#{surveyTitle},
+			1,
+			#{surveyType},
+			#{surveySimpleIntro},
+			#{surveyPeriod},
+			SYSDATE,
+			'N'
+		)
+
+		<selectKey keyProperty="surveySeq" resultType="Integer" order="AFTER">
+			SELECT 	SURVEY_SEQ.CURRVAL
+			FROM 	DUAL
+		</selectKey>
+	</insert>
+
+	<!-- 설문조사 등록 - INSERT SURVEY_QSTN -->
+	<insert id="insertSurveyQstn" parameterType="RequestSurveyQstn">
+		INSERT INTO SURVEY_QSTN
+		VALUES(
+			SURVEY_QSTN_SEQ.NEXTVAL,
+			#{surveySeq},
+			#{surveyQstnNum},
+			#{surveyQstnTitle},
+			#{surveyQstnNece},
+			#{surveyQstnType}
+		)
+
+		<selectKey keyProperty="surveyQstnSeq" resultType="Integer" order="AFTER">
+			SELECT SURVEY_QSTN_SEQ.CURRVAL FROM DUAL
+		</selectKey>
+	</insert>
+
+	<!-- 설문조사 등록 - INSERT SURVEY_QSTN_OPTION -->
+	<insert id="insertSurveyQstnOption" parameterType="RequestSurveyQstn">
+		INSERT INTO SURVEY_QSTN_OPTION
+		VALUES(
+			SURVEY_QSTN_OPTION_SEQ.NEXTVAL,
+			#{surveyQstnOptionNum},
+			#{surveyQstnOptionContent},
+			#{surveyQstnSeq}
+		)
+	</insert>
+
+	<!-- 설문조사 상세정보 - 기본정보 -->
+	<select id="selectSurveyBasicInfo" parameterType="Integer" resultMap="surveyVOResultSet">
+		SELECT	*
+		FROM	SURVEY
+		WHERE	SURVEY_SEQ = #{surveySeq}
+	</select>
+
+	<!-- 설문조사 상세정보 - 문제정보 -->
+	<select id="selectSurveyQstnInfo" parameterType="Integer" resultMap="surveyQstnResultSet">
+		SELECT	*
+		FROM	SURVEY_QSTN
+		WHERE	SURVEY_SEQ = #{surveySeq}
+	</select>
+
+	<!-- 설문조사 상세정보 - 옵션정보 -->
+	<select id="selectsurveyQstnOptionList" parameterType="list" resultMap="surveyQstnOptionResultSet">
+		SELECT	*
+		FROM	SURVEY_QSTN_OPTION
+		WHERE	SURVEY_QSTN_SEQ IN (
+		<foreach item="item" collection="list" separator=",">
+			#{item.surveyQstnSeq}
+		</foreach>
+		)
+	</select>
+
+
+</mapper>

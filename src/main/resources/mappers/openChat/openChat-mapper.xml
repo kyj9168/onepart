@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="OpenChat">
+
+	<resultMap
+		type="com.kh.onepart.resident.warm.open_chatting.model.vo.OpenChatVO"
+		id="openChatVOResultSet">
+		<id property="openChatSeq" column="OPEN_CHAT_SEQ" />
+		<result property="openChatOpenedDt"
+			column="OPEN_CHAT_OPENED_DT" />
+		<result property="openChatRoomNm" column="OPEN_CHAT_ROOM_NM" />
+		<result property="openChatMaxHead" column="OPEN_CHAT_MAX_HEAD" />
+		<result property="openChatDeleteTf"
+			column="OPEN_CHAT_DELETE_TF" />
+		<result property="residentSeq" column="RESIDENT_SEQ" />
+		<result property="openChatCurrHead"
+			column="OPEN_CHAT_CURR_HEAD" />
+		<result property="openChatPwd" column="OPEN_CHAT_PWD" />
+	</resultMap>
+
+	<resultMap type="com.kh.onepart.account.model.vo.ResidentVO"
+		id="residentVOResultSet">
+		<id property="residentSeq" column="RESIDENT_SEQ" />
+		<result property="residentId" column="RESIDENT_ID" />
+		<result property="residentPwd" column="RESIDENT_PWD" />
+		<result property="residentNm" column="RESIDENT_NM" />
+		<result property="residentPhone" column="RESIDENT_PHONE" />
+		<result property="residentEmail" column="RESIDENT_EMAIL" />
+		<result property="aptDetailInfoSeq"
+			column="APT_DETAIL_INFO_SEQ" />
+		<result property="householdAuthType"
+			column="HOUSEHOLD_AUTH_TYPE" />
+		<result property="residentEnrollDt" column="RESIDENT_ENROLL_DT" />
+		<result property="leaveTf" column="LEAVE_TF" />
+		<result property="aptAuthCd" column="APT_AUTH_CD" />
+		<result property="leaveDt" column="LEAVE_DT" />
+	</resultMap>
+
+
+	<select id="getMyRoomListAll" resultMap="openChatVOResultSet" parameterType="Integer">
+		SELECT *
+		FROM OPEN_CHAT OC
+		JOIN OPEN_CHAT_MEMBER OCM ON(OC.OPEN_CHAT_SEQ = OCM.OPEN_CHAT_SEQ)
+		WHERE OPEN_CHAT_DELETE_TF = 'N'
+		AND OCM.RESIDENT_SEQ = #{residentSeq}
+		AND OCM.STATUS = 'Y'
+		ORDER BY OC.OPEN_CHAT_SEQ DESC
+	</select>
+
+	<select id="selectListAll" resultMap="openChatVOResultSet">
+		SELECT * FROM OPEN_CHAT
+		WHERE OPEN_CHAT_DELETE_TF = 'N' ORDER BY OPEN_CHAT_SEQ DESC
+	</select>
+
+	<select id="selectOneById" resultMap="openChatVOResultSet">
+		SELECT *
+		FROM OPEN_CHAT
+		WHERE OPEN_CHAT_SEQ = #{openChatSeq}
+		AND OPEN_CHAT_DELETE_TF = 'N'
+	</select>
+
+	<insert id="insert" parameterType="OpenChatVO">
+		INSERT INTO OPEN_CHAT
+		(
+		OPEN_CHAT_SEQ,
+		OPEN_CHAT_OPENED_DT,
+		OPEN_CHAT_ROOM_NM,
+		OPEN_CHAT_MAX_HEAD,
+		OPEN_CHAT_DELETE_TF,
+		RESIDENT_SEQ,
+		OPEN_CHAT_CURR_HEAD,
+		OPEN_CHAT_PWD
+		)
+		VALUES
+		(
+		OPEN_CHAT_SEQ.nextval,
+		sysdate,
+		#{openChatRoomNm},
+		#{openChatMaxHead},
+		'N',
+		#{residentSeq},
+		0,
+		#{openChatPwd}
+		)
+		<selectKey keyProperty="openChatSeq" resultType="Integer" order="AFTER">
+			SELECT OPEN_CHAT_SEQ.currval FROM DUAL
+		</selectKey>
+	</insert>
+
+	<update id="setCurrHead" parameterType="Integer">
+		UPDATE OPEN_CHAT
+		SET
+		OPEN_CHAT_CURR_HEAD = (
+		SELECT count(*) FROM OPEN_CHAT_MEMBER WHERE OPEN_CHAT_SEQ = #{openChatSeq}
+		AND STATUS = 'Y'
+		)
+		WHERE OPEN_CHAT_SEQ = #{openChatSeq}
+	</update>
+
+	<select id="selectListByOpenChatSeq" resultMap="residentVOResultSet">
+		SELECT *
+		FROM RESIDENT
+		WHERE RESIDENT_SEQ IN (SELECT
+		RESIDENT_SEQ FROM OPEN_CHAT_MEMBER WHERE OPEN_CHAT_SEQ =
+		#{openChatSeq} AND STATUS = 'Y')
+	</select>
+
+	<select id="countChatRoom" resultType="Integer">
+		SELECT count(*)
+		FROM OPEN_CHAT
+		WHERE OPEN_CHAT_DELETE_TF = 'N'
+	</select>
+
+	<select id="countChatMyRoom" resultType="Integer" parameterType="Integer">
+		SELECT count(*)
+		FROM OPEN_CHAT OC
+		join OPEN_CHAT_MEMBER OCM ON( OC.OPEN_CHAT_SEQ = OCM.OPEN_CHAT_SEQ)
+		WHERE OPEN_CHAT_DELETE_TF = 'N'
+		AND OCM.STATUS = 'Y'
+		AND OCM.RESIDENT_SEQ = #{residentSeq}
+	</select>
+
+	<update id="updateOpenChatDelete" parameterType="OpenChatVO">
+		UPDATE OPEN_CHAT
+		SET OPEN_CHAT_DELETE_TF = 'Y'
+		WHERE OPEN_CHAT_SEQ = #{openChatSeq}
+	</update>
+
+	<select id="countChatSearchRoom" resultType="Integer" parameterType="String">
+		SELECT count(*)
+		FROM OPEN_CHAT
+		WHERE OPEN_CHAT_DELETE_TF = 'N'
+		AND (OPEN_CHAT_ROOM_NM LIKE '%' || #{searchText} || '%'
+		OR OPEN_CHAT_SEQ LIKE '%' || #{searchText} || '%')
+	</select>
+
+	<select id="openChatRoomSearchList"	resultMap="openChatVOResultSet" parameterType="String">
+		SELECT *
+		FROM OPEN_CHAT
+		WHERE OPEN_CHAT_DELETE_TF = 'N'
+		AND (OPEN_CHAT_ROOM_NM LIKE '%' || #{searchText} || '%'
+		OR OPEN_CHAT_SEQ LIKE '%' || #{searchText} || '%')
+		ORDER BY OPEN_CHAT_SEQ DESC
+	</select>
+
+</mapper>

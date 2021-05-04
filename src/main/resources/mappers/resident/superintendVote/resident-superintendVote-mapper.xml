@@ -1,0 +1,644 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="Superintend">
+	<resultMap type="VoteList" id="VoteListResultSet">
+		<result property="voteSeq" column="VOTE_SEQ"/>
+		<result property="voteKind" column="VOTE_KIND"/>
+		<result property="voteNm" column="VOTE_NM"/>
+		<result property="endDt" column="END_DT"/>
+		<result property="voteStatus" column="VOTE_STATUS"/>
+	</resultMap>
+
+	<resultMap type="ElectionVote" id="ElectionVoteResultSet">
+		<id property="electVoteSeq" column="ELECT_VOTE_SEQ"/>
+		<result property="electNm" column="ELECT_NM"/>
+		<result property="electType" column="ELECT_TYPE"/>
+		<result property="electVoteDetail" column="ELECT_VOTE_DETAIL"/>
+		<result property="electVoteEnrollDt" column="ELECT_VOTE_ENROLL_DT"/>
+		<result property="cnddEnrollStartDt" column="CNDD_ENROLL_START_DT"/>
+		<result property="cnddEnrollEndDt" column="CNDD_ENROLL_END_DT"/>
+		<result property="campaignStartDt" column="CAMPAIGN_START_DT"/>
+		<result property="campaignEndDt" column="CAMPAIGN_END_DT"/>
+		<result property="voteStartDt" column="VOTE_START_DT"/>
+		<result property="voteEndDt" column="VOTE_END_DT"/>
+		<result property="electVoteOfflinePlace" column="ELECT_VOTE_OFFLINE_PLACE"/>
+		<result property="bdNm" column="BD_NM"/>
+	</resultMap>
+
+	<resultMap type="ElectionVoteCandidate" id="ElectionVoteCandidateResultSet">
+		<id property="electVoteCndtSignupSeq" column="ELECT_VOTE_CNDT_SIGNUP_SEQ"></id>
+		<result property="electVoteSeq" column="ELECT_VOTE_SEQ"/>
+		<result property="finalEdu" column="FINAL_EDU"/>
+		<result property="residentSeq" column="RESIDENT_SEQ"/>
+		<result property="cndtSignupDt" column="CNDT_SIGNUP_DT"/>
+		<result property="workNm" column="WORK_NM"/>
+		<result property="workPosition" column="WORK_POSITION"/>
+		<result property="workAdd" column="WORK_ADD"/>
+		<result property="careerSeq" column="CAREER_SEQ"/>
+		<result property="status" column="STATUS"/>
+		<result property="simpleInfo" column="SIMPLE_INFO"/>
+		<result property="detailInfo" column="DETAIL_INFO"/>
+		<result property="etcInfo" column="ETC_INFO"/>
+		<result property="cndtEnrollDt" column="CNDT_ENROLL_DT"/>
+		<result property="cndtElectedDt" column="CNDT_ELECTED_DT"/>
+		<result property="residentNm" column="RESIDENT_NM"/>
+		<result property="bdNm" column="BD_NM"/>
+		<result property="rmNm" column="RM_NM"/>
+		<result property="changeNm" column="CHANGE_NM"/>
+		<result property="filePath" column="FILE_PATH"/>
+		<result property="cndtNo" column="CNDT_NO"/>
+		<result property="residentBirth" column="RESIDENT_BIRTH"/>
+		<result property="residentGender" column="RESIDENT_GENDER"/>
+	</resultMap>
+
+	<resultMap type="ApartDetailInfo" id="ApartDetailInfoResultSet">
+		<id property="aptDetailInfoSeq" column="APT_DETAIL_INFO_SEQ"></id>
+		<result property="bdNm" column="BD_NM"/>
+		<result property="rmNm" column="RM_NM"/>
+		<result property="squareMeasure" column="SQUARE_MEASURE"/>
+		<result property="residentNm" column="RESIDENT_NM"/>
+		<result property="residentPhone" column="RESIDENT_PHONE"/>
+		<result property="residentSeq" column="RESIDENT_SEQ"/>
+	</resultMap>
+
+	<resultMap type="GeneralVote" id="GeneralVoteResultSet">
+		<id property="gnrVoteSeq" column="GNR_VOTE_SEQ"/>
+		<result property="gnrVoteName" column="GNR_VOTE_NAME"/>
+		<result property="gnrVoteType" column="GNR_VOTE_TYPE"/>
+		<result property="gnrVoteStartDt" column="GNR_VOTE_START_DT"/>
+		<result property="gnrVoteEndDt" column="GNR_VOTE_END_DT"/>
+		<result property="gnrVoteOfflinePlace" column="GNR_VOTE_OFFLINE_PLACE"/>
+		<result property="gnrVoteDetail" column="GNR_VOTE_DETAIL"/>
+		<result property="gnrVoteEnrollDt" column="GNR_VOTE_ENROLL_DT"/>
+		<result property="gnrVoteGrant" column="GNR_VOTE_GRANT"/>
+	</resultMap>
+
+	<resultMap type="GeneralVoteCandidate" id="GeneralVoteCandidateResultSet">
+		<id property="gnrVoteCndtEnrollSeq" column="GNR_VOTE_CNDT_ENROLL_SEQ"></id>
+		<result property="gnrVoteSeq" column="GNR_VOTE_SEQ"/>
+		<result property="cndtNm" column="CNDT_NM"/>
+		<result property="cndtDetail" column="CNDT_DETAIL"/>
+		<result property="cndtEnrollDt" column="CNDT_ENROLL_DT"/>
+	</resultMap>
+
+	<resultMap type="Career" id="CareerResultSet">
+		<id property="careerSeq" column="CAREER_SEQ"/>
+		<result property="careerPeriod" column="CAREER_PERIOD"/>
+		<result property="careerDetail" column="CAREER_DETAIL"/>
+		<result property="electVoteCndtSignupSeq" column="ELECT_VOTE_CNDT_SIGNUP_SEQ"/>
+	</resultMap>
+
+	<resultMap type="ElectoralRegister" id="ElectoralRegisterResultSet">
+		<id property="residentSeq" column="RESIDENT_SEQ"/>
+		<result property="aptDetailInfoSeq" column="APT_DETAIL_INFO_SEQ"/>
+		<result property="residentNm" column="RESIDENT_NM"/>
+		<result property="residentPhone" column="RESIDENT_PHONE"/>
+		<result property="voteStatue" column="VOTE_STATUS"/>
+		<result property="status" column="STATUS"/>
+	</resultMap>
+
+	<resultMap type="GeneralVoteBdNm" id="GeneralVoteBdNmResultSet">
+		<id property="gnrVoteByBdNmSeq" column="GNR_VOTE_BY_BD_NM_SEQ"/>
+		<result property="bdNm" column="BD_NM"/>
+		<result property="gnrVoteSeq" column="GNR_VOTE_SEQ"/>
+	</resultMap>
+
+	<resultMap type="CandidatePercent" id="CandidatePercentResultSet">
+		<result property="candidatePercent" column="CANDIDATE_PERCENT"/>
+	</resultMap>
+
+	<insert id="insertGeneralVote" parameterType="GeneralVote">
+		INSERT INTO GNR_VOTE
+		VALUES (
+					GNR_VOTE_SEQ.NEXTVAL,
+					#{gnrVoteName},
+					#{gnrVoteType},
+					SYSDATE,
+					TO_DATE(#{gnrVoteEndDt}, 'YYYY/MM/DD'),
+					#{gnrVoteOfflinePlace},
+					#{gnrVoteDetail},
+					SYSDATE,
+					#{gnrVoteGrant}
+				)
+		<selectKey keyProperty="gnrVoteSeq" resultType="Integer" order="AFTER">
+			SELECT GNR_VOTE_SEQ.CURRVAL FROM DUAL
+		</selectKey>
+	</insert>
+
+	<insert id="insertGeneralVoteBdNm" parameterType="GeneralVoteBdNm">
+		INSERT INTO GNR_VOTE_BY_BD_NM
+		VALUES (
+					GNR_VOTE_BY_BD_NM_SEQ.NEXTVAL,
+					#{bdNm},
+					#{gnrVoteSeq}
+				)
+	</insert>
+
+	<insert id="insertGeneralVoteCandidate" parameterType="GeneralVoteCandidate">
+		INSERT INTO GNR_VOTE_CNDT_ENROLL
+		VALUES (
+					GNR_VOTE_CNDT_ENROLL_SEQ.NEXTVAL,
+					#{gnrVoteSeq},
+					#{cndtNm},
+					#{cndtDetail},
+					SYSDATE
+				)
+	</insert>
+
+	<insert id="insertElectionVote" parameterType="ElectionVote">
+		INSERT INTO ELECT_VOTE
+		VALUES (
+					ELECT_VOTE_SEQ.NEXTVAL,
+					#{electNm},
+					#{electType},
+					#{electVoteDetail},
+					SYSDATE,
+					TO_DATE(#{cnddEnrollStartDt}, 'YYYY/MM/DD'),
+					TO_DATE(#{cnddEnrollEndDt}, 'YYYY/MM/DD'),
+					TO_DATE(#{campaignStartDt}, 'YYYY/MM/DD'),
+					TO_DATE(#{campaignEndDt}, 'YYYY/MM/DD'),
+					TO_DATE(#{voteStartDt}, 'YYYY/MM/DD'),
+					TO_DATE(#{voteEndDt}, 'YYYY/MM/DD'),
+					#{electVoteOfflinePlace}
+					<if test="bdNm != 0">
+					,#{bdNm}
+					</if>
+					<if test="bdNm == 0">
+					,NULL
+					</if>
+				)
+	</insert>
+
+	<select id="selectAllIngVoteList" resultMap="VoteListResultSet">
+		<![CDATA[
+			SELECT *
+			FROM (
+			        SELECT ELECT_VOTE_SEQ as VOTE_SEQ,
+			                '선거' as VOTE_KIND,
+			                ELECT_NM as VOTE_NM,
+			                CASE WHEN CNDD_ENROLL_START_DT <= TO_DATE(TO_CHAR(SYSDATE, 'YYYY/MM/DD'), 'YYYY/MM/DD') AND CNDD_ENROLL_END_DT >= TO_DATE(TO_CHAR(SYSDATE, 'YYYY/MM/DD'), 'YYYY/MM/DD') THEN CNDD_ENROLL_END_DT
+			                      WHEN CAMPAIGN_START_DT <= TO_DATE(TO_CHAR(SYSDATE, 'YYYY/MM/DD'), 'YYYY/MM/DD') AND CAMPAIGN_END_DT >= TO_DATE(TO_CHAR(SYSDATE, 'YYYY/MM/DD'), 'YYYY/MM/DD') THEN CAMPAIGN_END_DT
+			                      WHEN VOTE_START_DT <= TO_DATE(TO_CHAR(SYSDATE, 'YYYY/MM/DD'), 'YYYY/MM/DD') AND VOTE_END_DT >= TO_DATE(TO_CHAR(SYSDATE, 'YYYY/MM/DD'), 'YYYY/MM/DD') THEN VOTE_END_DT END AS END_DT,
+			                CASE WHEN CNDD_ENROLL_START_DT <= TO_DATE(TO_CHAR(SYSDATE, 'YYYY/MM/DD'), 'YYYY/MM/DD') AND CNDD_ENROLL_END_DT >= TO_DATE(TO_CHAR(SYSDATE, 'YYYY/MM/DD'), 'YYYY/MM/DD') THEN '후보등록기간'
+			                      WHEN CAMPAIGN_START_DT <= TO_DATE(TO_CHAR(SYSDATE, 'YYYY/MM/DD'), 'YYYY/MM/DD') AND CAMPAIGN_END_DT >= TO_DATE(TO_CHAR(SYSDATE, 'YYYY/MM/DD'), 'YYYY/MM/DD') THEN '선거운동기간'
+			                      WHEN VOTE_START_DT <= TO_DATE(TO_CHAR(SYSDATE, 'YYYY/MM/DD'), 'YYYY/MM/DD') AND VOTE_END_DT >= TO_DATE(TO_CHAR(SYSDATE, 'YYYY/MM/DD'), 'YYYY/MM/DD') THEN '투표기간' END AS VOTE_STATUS
+			        FROM ELECT_VOTE
+
+			        UNION ALL
+
+			        SELECT GNR_VOTE_SEQ as VOTE_SEQ,
+			                '일반투표' as VOTE_KIND,
+			                GNR_VOTE_NAME as VOTE_NM,
+			                GNR_VOTE_END_DT as END_DT,
+			                '투표기간' as VOTE_STATUS
+			        FROM GNR_VOTE
+			    )
+			WHERE END_DT >= TO_DATE(TO_CHAR(SYSDATE, 'YYYY/MM/DD'), 'YYYY/MM/DD')
+			ORDER BY END_DT
+		]]>
+	</select>
+
+	<select id="selectAllEndVoteList" resultMap="VoteListResultSet">
+		<![CDATA[
+			SELECT *
+			FROM (
+			        SELECT ELECT_VOTE_SEQ as VOTE_SEQ,
+			                '선거' as VOTE_KIND,
+			                ELECT_NM as VOTE_NM,
+			                CASE WHEN CNDD_ENROLL_START_DT <= TO_DATE(TO_CHAR(SYSDATE, 'YYYY/MM/DD'), 'YYYY/MM/DD') AND CNDD_ENROLL_END_DT >= TO_DATE(TO_CHAR(SYSDATE, 'YYYY/MM/DD'), 'YYYY/MM/DD') THEN CNDD_ENROLL_END_DT
+			                      WHEN CAMPAIGN_START_DT <= TO_DATE(TO_CHAR(SYSDATE, 'YYYY/MM/DD'), 'YYYY/MM/DD') AND CAMPAIGN_END_DT >= TO_DATE(TO_CHAR(SYSDATE, 'YYYY/MM/DD'), 'YYYY/MM/DD') THEN CAMPAIGN_END_DT
+			                      WHEN VOTE_START_DT <= TO_DATE(TO_CHAR(SYSDATE, 'YYYY/MM/DD'), 'YYYY/MM/DD') AND VOTE_END_DT >= TO_DATE(TO_CHAR(SYSDATE, 'YYYY/MM/DD'), 'YYYY/MM/DD') THEN VOTE_END_DT
+	                              ELSE VOTE_END_DT END AS END_DT,
+			                CASE WHEN CNDD_ENROLL_START_DT <= TO_DATE(TO_CHAR(SYSDATE, 'YYYY/MM/DD'), 'YYYY/MM/DD') AND CNDD_ENROLL_END_DT >= TO_DATE(TO_CHAR(SYSDATE, 'YYYY/MM/DD'), 'YYYY/MM/DD') THEN '후보등록기간'
+			                      WHEN CAMPAIGN_START_DT <= TO_DATE(TO_CHAR(SYSDATE, 'YYYY/MM/DD'), 'YYYY/MM/DD') AND CAMPAIGN_END_DT >= TO_DATE(TO_CHAR(SYSDATE, 'YYYY/MM/DD'), 'YYYY/MM/DD') THEN '선거운동기간'
+			                      WHEN VOTE_START_DT <= TO_DATE(TO_CHAR(SYSDATE, 'YYYY/MM/DD'), 'YYYY/MM/DD') AND VOTE_END_DT >= TO_DATE(TO_CHAR(SYSDATE, 'YYYY/MM/DD'), 'YYYY/MM/DD') THEN '투표기간'
+	                              ELSE '투표종료' END AS VOTE_STATUS
+			        FROM ELECT_VOTE
+
+			        UNION ALL
+
+			        SELECT GNR_VOTE_SEQ as VOTE_SEQ,
+			                '일반투표' as VOTE_KIND,
+			                GNR_VOTE_NAME as VOTE_NM,
+			                GNR_VOTE_END_DT as END_DT,
+			                '투표종료' as VOTE_STATUS
+			        FROM GNR_VOTE
+			    )
+			WHERE END_DT < TO_DATE(TO_CHAR(SYSDATE, 'YYYY/MM/DD'), 'YYYY/MM/DD')
+			ORDER BY END_DT
+		]]>
+	</select>
+
+	<select id="selectOneElectionVote" parameterType="_int" resultMap="ElectionVoteResultSet">
+		SELECT *
+		FROM ELECT_VOTE
+		WHERE ELECT_VOTE_SEQ = #{voteSeq}
+	</select>
+
+	<select id="selectAllElectionVoteCandidate" parameterType="_int" resultMap="ElectionVoteCandidateResultSet">
+		SELECT *
+		FROM ELECT_VOTE_CNDT_SIGNUP t1
+		JOIN RESIDENT t2 ON (t1.RESIDENT_SEQ = t2.RESIDENT_SEQ)
+		JOIN APT_DETAIL_INFO t3 ON (t3.APT_DETAIL_INFO_SEQ = t2.APT_DETAIL_INFO_SEQ)
+		JOIN IMAGE t4 ON (t1.ELECT_VOTE_CNDT_SIGNUP_SEQ = t4.ELECT_VOTE_CNDT_SIGNUP_SEQ)
+		WHERE t1.ELECT_VOTE_SEQ = #{voteSeq}
+		AND t1.STATUS = 2
+		ORDER BY t1.ELECT_VOTE_CNDT_SIGNUP_SEQ
+	</select>
+
+	<select id="selectAllHoList" parameterType="_int" resultMap="ApartDetailInfoResultSet">
+		SELECT *
+		FROM APT_DETAIL_INFO
+		WHERE BD_NM = #{bdNm}
+	</select>
+
+	<select id="selectAllNameList" parameterType="ApartDetailInfo" resultMap="ApartDetailInfoResultSet">
+		SELECT *
+		FROM APT_DETAIL_INFO A
+		JOIN RESIDENT R ON (A.APT_DETAIL_INFO_SEQ = R.APT_DETAIL_INFO_SEQ)
+		WHERE BD_NM = #{bdNm}
+		AND RM_NM = #{rmNm}
+	</select>
+
+	<update id="updateElectionVoteCandidate" parameterType="ElectionVoteCandidate">
+		UPDATE ELECT_VOTE_CNDT_SIGNUP
+		SET SIMPLE_INFO = #{simpleInfo}, DETAIL_INFO = #{detailInfo}, ETC_INFO = #{etcInfo}, CNDT_ENROLL_DT = SYSDATE, STATUS = 2, CNDT_NO = #{cndtNo}
+		WHERE ELECT_VOTE_CNDT_SIGNUP_SEQ = #{electVoteCndtSignupSeq}
+	</update>
+
+	<select id="selectUserElectVoteCndtSignupSeq" resultType="_int" parameterType="ElectionVoteCandidate">
+		SELECT ELECT_VOTE_CNDT_SIGNUP_SEQ
+		FROM ELECT_VOTE_CNDT_SIGNUP
+		WHERE ELECT_VOTE_SEQ = #{electVoteSeq}
+		AND RESIDENT_SEQ = #{residentSeq}
+	</select>
+
+	<select id="selectOneGeneralVote" parameterType="_int" resultMap="GeneralVoteResultSet">
+		SELECT *
+		FROM GNR_VOTE
+		WHERE GNR_VOTE_SEQ = #{voteSeq}
+	</select>
+
+	<select id="selectAllGeneralVoteCandidate" parameterType="_int" resultMap="GeneralVoteCandidateResultSet">
+		SELECT *
+		FROM GNR_VOTE_CNDT_ENROLL
+		WHERE GNR_VOTE_SEQ = #{voteSeq}
+	</select>
+
+	<select id="selectConfirmResident" parameterType="ResidentVO" resultType="_int">
+		SELECT RESIDENT_SEQ
+		FROM RESIDENT
+		WHERE RESIDENT_NM = #{residentNm}
+		AND APT_DETAIL_INFO_SEQ = #{aptDetailInfoSeq}
+		AND HOUSEHOLD_AUTH_TYPE = 2
+	</select>
+
+	<select id="selectKindResident" parameterType="ResidentVO" resultType="_int">
+		SELECT COUNT(*)
+		FROM RESIDENT
+		WHERE APT_DETAIL_INFO_SEQ = #{aptDetailInfoSeq}
+		AND ( HOUSEHOLD_AUTH_TYPE = 2
+		OR HOUSEHOLD_AUTH_TYPE = 3 )
+	</select>
+
+	<select id="selectConfirmResidents" parameterType="ResidentVO" resultType="_int">
+		SELECT RESIDENT_SEQ
+		FROM RESIDENT
+		WHERE RESIDENT_NM = #{residentNm}
+		AND APT_DETAIL_INFO_SEQ = #{aptDetailInfoSeq}
+		AND HOUSEHOLD_AUTH_TYPE = 3
+	</select>
+
+	<select id="selectAllElectionVoteCandidateApply" parameterType="_int" resultMap="ElectionVoteCandidateResultSet">
+		SELECT *
+		FROM ELECT_VOTE_CNDT_SIGNUP t1
+		JOIN RESIDENT t2 ON (t1.RESIDENT_SEQ = t2.RESIDENT_SEQ)
+		JOIN APT_DETAIL_INFO t3 ON (t3.APT_DETAIL_INFO_SEQ = t2.APT_DETAIL_INFO_SEQ)
+		JOIN IMAGE t4 ON (t1.ELECT_VOTE_CNDT_SIGNUP_SEQ = t4.ELECT_VOTE_CNDT_SIGNUP_SEQ)
+		WHERE t1.ELECT_VOTE_SEQ = #{electVoteSeq}
+		ORDER BY t1.ELECT_VOTE_CNDT_SIGNUP_SEQ
+	</select>
+
+	<select id="selectOneElectionVoteCandidate" parameterType="_int" resultMap="ElectionVoteCandidateResultSet">
+		SELECT *
+		FROM ELECT_VOTE_CNDT_SIGNUP t1
+		JOIN RESIDENT t2 ON (t1.RESIDENT_SEQ = t2.RESIDENT_SEQ)
+		JOIN APT_DETAIL_INFO t3 ON (t3.APT_DETAIL_INFO_SEQ = t2.APT_DETAIL_INFO_SEQ)
+		JOIN IMAGE t4 ON (t1.ELECT_VOTE_CNDT_SIGNUP_SEQ = t4.ELECT_VOTE_CNDT_SIGNUP_SEQ)
+        WHERE t1.ELECT_VOTE_CNDT_SIGNUP_SEQ = #{electVoteCndtSignupSeq}
+	</select>
+
+	<select id="selectAllElectionVoteCadidateCareer" parameterType="_int" resultMap="CareerResultSet">
+		SELECT *
+		FROM CAREER
+		WHERE ELECT_VOTE_CNDT_SIGNUP_SEQ = #{electVoteCndtSignupSeq}
+	</select>
+
+	<select id="selectConfirmHistoryElectionVote" parameterType="VotePrtcpt" resultType="_int">
+		SELECT COUNT(*)
+		FROM VOTE_PRTCPT
+		WHERE ELECT_VOTE_SEQ = #{electVoteSeq}
+		AND RESIDENT_SEQ = #{residentSeq}
+	</select>
+
+	<select id="selectConfirmHistoryGeneralVote" parameterType="VotePrtcpt" resultType="_int">
+		SELECT COUNT(*)
+		FROM VOTE_PRTCPT
+		WHERE GNR_VOTE_SEQ = #{gnrVoteSeq}
+		AND RESIDENT_SEQ = #{residentSeq}
+	</select>
+
+	<insert id="insertRealVoteElection" parameterType="VotePrtcpt">
+		INSERT INTO VOTE_PRTCPT
+		VALUES (
+					VOTE_PRTCPT_SEQ.NEXTVAL,
+					2,
+					NULL,
+					#{electVoteSeq},
+					#{residentSeq}
+				)
+
+		<selectKey keyProperty="votePrtcptSeq" resultType="Integer" order="AFTER">
+	        SELECT VOTE_PRTCPT_SEQ.CURRVAL FROM DUAL
+      	</selectKey>
+	</insert>
+
+	<insert id="insertRealVoteElectionCandidate" parameterType="VoteSelected">
+		INSERT INTO VOTE_SELECTED
+		VALUES (
+					VOTE_SELECTED_SEQ.NEXTVAL,
+					#{votePrtcptSeq},
+					2,
+					NULL,
+					#{electVoteCndtSignupSeq},
+					#{electVoteCndtSignupSeq}
+				)
+	</insert>
+
+	<insert id="insertRealVoteGeneral" parameterType="VotePrtcpt">
+		INSERT INTO VOTE_PRTCPT
+		VALUES (
+					VOTE_PRTCPT_SEQ.NEXTVAL,
+					1,
+					#{gnrVoteSeq},
+					NULL,
+					#{residentSeq}
+				)
+
+		<selectKey keyProperty="votePrtcptSeq" resultType="Integer" order="AFTER">
+	        SELECT VOTE_PRTCPT_SEQ.CURRVAL FROM DUAL
+      	</selectKey>
+	</insert>
+
+	<insert id="insertRealVoteGeneralCandidate" parameterType="VoteSelected">
+		INSERT INTO VOTE_SELECTED
+		VALUES (
+					VOTE_SELECTED_SEQ.NEXTVAL,
+					#{votePrtcptSeq},
+					1,
+					#{gnrVoteCndtEnrollSeq},
+					NULL,
+					#{gnrVoteCndtEnrollSeq}
+				)
+	</insert>
+
+	<select id="selectElectionStatus" parameterType="_int" resultMap="ElectoralRegisterResultSet">
+		SELECT CASE ELECT_TYPE WHEN 3 THEN TO_CHAR(BD_NM)
+                       WHEN 1 THEN '세대주'
+                       WHEN 2 THEN '세대주' END AS STATUS
+		FROM ELECT_VOTE
+		WHERE ELECT_VOTE_SEQ = #{electVoteSeq}
+	</select>
+
+	<select id="selectAllElectoralRegister" parameterType="_int" resultMap="ElectoralRegisterResultSet">
+		SELECT A.RESIDENT_SEQ,
+		       A.APT_DETAIL_INFO_SEQ,
+		       A.RESIDENT_NM,
+		       A.RESIDENT_PHONE,
+		       CASE WHEN B.ELECT_VOTE_SEQ IS NULL THEN '미참여'
+		            WHEN B.ELECT_VOTE_SEQ IS NOT NULL THEN '참여' END AS VOTE_STATUS
+		FROM (
+		        SELECT *
+		        FROM RESIDENT
+		        WHERE (APT_DETAIL_INFO_SEQ, HOUSEHOLD_AUTH_TYPE)
+		        IN (
+		            SELECT *
+		            FROM (
+		                    SELECT APT_DETAIL_INFO_SEQ, MAX(HOUSEHOLD_AUTH_TYPE) AS HOUSEHOLD_AUTH_TYPE
+		                    FROM RESIDENT
+		                    GROUP BY APT_DETAIL_INFO_SEQ
+		                 )
+		            WHERE HOUSEHOLD_AUTH_TYPE = 3
+		            OR HOUSEHOLD_AUTH_TYPE = 2
+		           )
+		        ) A
+		LEFT JOIN (
+		            SELECT *
+		            FROM VOTE_PRTCPT
+		            WHERE ELECT_VOTE_SEQ = #{electVoteSeq}
+		          ) B
+		ON ( A.RESIDENT_SEQ = B.RESIDENT_SEQ )
+	</select>
+
+	<select id="selectDongElectoralRegister" parameterType="ElectoralRegister" resultMap="ElectoralRegisterResultSet">
+		SELECT A.RESIDENT_SEQ,
+		       A.APT_DETAIL_INFO_SEQ,
+		       A.RESIDENT_NM,
+		       A.RESIDENT_PHONE,
+		       CASE WHEN QCSJ_C000000000800000 IS NULL THEN '미참여'
+		            WHEN QCSJ_C000000000800000 IS NOT NULL THEN '참여' END AS VOTE_STATUS
+		FROM (
+		        SELECT *
+		        FROM RESIDENT
+		        WHERE (APT_DETAIL_INFO_SEQ, HOUSEHOLD_AUTH_TYPE)
+		        IN (
+		            SELECT *
+		            FROM (
+		                    SELECT APT_DETAIL_INFO_SEQ, MAX(HOUSEHOLD_AUTH_TYPE) AS HOUSEHOLD_AUTH_TYPE
+		                    FROM RESIDENT
+		                    GROUP BY APT_DETAIL_INFO_SEQ
+		                 )
+		            WHERE HOUSEHOLD_AUTH_TYPE = 3
+		            OR HOUSEHOLD_AUTH_TYPE = 2
+		           )
+		        ) A
+		LEFT JOIN (
+		            SELECT *
+		            FROM VOTE_PRTCPT V
+		            LEFT JOIN ELECT_VOTE E ON (V.ELECT_VOTE_SEQ = E.ELECT_VOTE_SEQ)
+		            WHERE V.ELECT_VOTE_SEQ = #{electVoteSeq}
+		          ) B
+		ON ( A.RESIDENT_SEQ = B.RESIDENT_SEQ)
+		WHERE SUBSTR(APT_DETAIL_INFO_SEQ, 3, 3) = #{status}
+	</select>
+
+	<select id="selectGenaralStatus" parameterType="_int" resultMap="ElectoralRegisterResultSet">
+		SELECT CASE GNR_VOTE_GRANT WHEN 1 THEN '세대주'
+                                   WHEN 2 THEN '동별' END AS STATUS
+		FROM GNR_VOTE
+		WHERE GNR_VOTE_SEQ =  #{electVoteSeq}
+	</select>
+
+	<select id="selectAllDongList" parameterType="_int" resultMap="GeneralVoteBdNmResultSet">
+		SELECT BD_NM
+		FROM GNR_VOTE_BY_BD_NM
+		WHERE GNR_VOTE_SEQ = #{electVoteSeq}
+	</select>
+
+	<select id="selectDongGeneralRegister" resultMap="ElectoralRegisterResultSet" parameterType="java.util.HashMap">
+		SELECT A.RESIDENT_SEQ,
+		       A.APT_DETAIL_INFO_SEQ,
+		       A.RESIDENT_NM,
+		       A.RESIDENT_PHONE,
+		       CASE WHEN QCSJ_C000000000800000 IS NULL THEN '미참여'
+		            WHEN QCSJ_C000000000800000 IS NOT NULL THEN '참여' END AS VOTE_STATUS
+		FROM (
+		        SELECT *
+		        FROM RESIDENT
+		        WHERE (APT_DETAIL_INFO_SEQ, HOUSEHOLD_AUTH_TYPE)
+		        IN (
+		            SELECT *
+		            FROM (
+		                    SELECT APT_DETAIL_INFO_SEQ, MAX(HOUSEHOLD_AUTH_TYPE) AS HOUSEHOLD_AUTH_TYPE
+		                    FROM RESIDENT
+		                    GROUP BY APT_DETAIL_INFO_SEQ
+		                 )
+		            WHERE HOUSEHOLD_AUTH_TYPE = 3
+		            OR HOUSEHOLD_AUTH_TYPE = 2
+		           )
+		        ) A
+		LEFT JOIN (
+		            SELECT *
+		            FROM VOTE_PRTCPT V
+		            LEFT JOIN GNR_VOTE E ON (V.GNR_VOTE_SEQ = E.GNR_VOTE_SEQ)
+		            WHERE V.GNR_VOTE_SEQ = #{electVoteSeq}
+		          ) B
+		ON ( A.RESIDENT_SEQ = B.RESIDENT_SEQ)
+		WHERE SUBSTR(APT_DETAIL_INFO_SEQ, 3, 3) IN
+										<foreach collection="dongList" item="item" index="index" open="(" separator="," close=")">
+											#{item, jdbcType=VARCHAR}
+										</foreach>
+	</select>
+
+	<select id="selectCountAllElectoralRegister" parameterType="_int" resultType="_int">
+		SELECT COUNT(*)
+		FROM (
+		        SELECT *
+		        FROM RESIDENT
+		        WHERE (APT_DETAIL_INFO_SEQ, HOUSEHOLD_AUTH_TYPE)
+		        IN (
+		            SELECT *
+		            FROM (
+		                    SELECT APT_DETAIL_INFO_SEQ, MAX(HOUSEHOLD_AUTH_TYPE) AS HOUSEHOLD_AUTH_TYPE
+		                    FROM RESIDENT
+		                    GROUP BY APT_DETAIL_INFO_SEQ
+		                 )
+		            WHERE HOUSEHOLD_AUTH_TYPE = 3
+		            OR HOUSEHOLD_AUTH_TYPE = 2
+		           )
+		        ) A
+		LEFT JOIN (
+		            SELECT *
+		            FROM VOTE_PRTCPT
+		            WHERE ELECT_VOTE_SEQ = #{voteSeq}
+		          ) B
+		ON ( A.RESIDENT_SEQ = B.RESIDENT_SEQ )
+	</select>
+
+	<select id="selectCountDongElectoralRegister" parameterType="ElectoralRegister" resultType="_int">
+		SELECT COUNT(*)
+		FROM (
+		        SELECT *
+		        FROM RESIDENT
+		        WHERE (APT_DETAIL_INFO_SEQ, HOUSEHOLD_AUTH_TYPE)
+		        IN (
+		            SELECT *
+		            FROM (
+		                    SELECT APT_DETAIL_INFO_SEQ, MAX(HOUSEHOLD_AUTH_TYPE) AS HOUSEHOLD_AUTH_TYPE
+		                    FROM RESIDENT
+		                    GROUP BY APT_DETAIL_INFO_SEQ
+		                 )
+		            WHERE HOUSEHOLD_AUTH_TYPE = 3
+		            OR HOUSEHOLD_AUTH_TYPE = 2
+		           )
+		    )
+		WHERE SUBSTR(APT_DETAIL_INFO_SEQ, 3, 3) = #{status}
+	</select>
+
+	<select id="selectCountApplyElectoralRegister" resultType="_int">
+		SELECT COUNT(*)
+		FROM VOTE_PRTCPT
+		WHERE ELECT_VOTE_SEQ = #{voteSeq}
+	</select>
+
+	<select id="selectCountDongElectoralRegisterGenarl" resultType="_int" parameterType="java.util.HashMap">
+		SELECT COUNT(*)
+		FROM (
+		        SELECT *
+		        FROM RESIDENT
+		        WHERE (APT_DETAIL_INFO_SEQ, HOUSEHOLD_AUTH_TYPE)
+		        IN (
+		            SELECT *
+		            FROM (
+		                    SELECT APT_DETAIL_INFO_SEQ, MAX(HOUSEHOLD_AUTH_TYPE) AS HOUSEHOLD_AUTH_TYPE
+		                    FROM RESIDENT
+		                    GROUP BY APT_DETAIL_INFO_SEQ
+		                 )
+		            WHERE HOUSEHOLD_AUTH_TYPE = 3
+		            OR HOUSEHOLD_AUTH_TYPE = 2
+		           )
+		        )
+		WHERE SUBSTR(APT_DETAIL_INFO_SEQ, 3, 3) IN
+										<foreach collection="dongList" item="item" index="index" open="(" separator="," close=")">
+											#{item, jdbcType=VARCHAR}
+										</foreach>
+	</select>
+
+	<select id="selectCountApplyGeneralElctoral" resultType="_int">
+		SELECT COUNT(*)
+		FROM VOTE_PRTCPT
+		WHERE GNR_VOTE_SEQ = #{voteSeq}
+	</select>
+
+	<select id="selectCandidatePercentList" parameterType="ElectionVoteCandidate" resultMap="CandidatePercentResultSet">
+		SELECT TRUNC((
+		                SELECT COUNT(*)
+		                FROM VOTE_PRTCPT P
+		                JOIN VOTE_SELECTED S ON (P.VOTE_PRTCPT_SEQ = S.VOTE_PRTCPT_SEQ)
+		                WHERE ELECT_VOTE_SEQ = #{electVoteSeq}
+		                AND ELECT_VOTE_CNDT_SIGNUP_SEQ = #{electVoteCndtSignupSeq}
+		            ) / DECODE((
+		                SELECT COUNT(*)
+		                FROM VOTE_PRTCPT P
+		                JOIN VOTE_SELECTED S ON (P.VOTE_PRTCPT_SEQ = S.VOTE_PRTCPT_SEQ)
+		                WHERE ELECT_VOTE_SEQ = #{electVoteSeq}), 0, NULL, (
+                                                                SELECT COUNT(*)
+                                                                FROM VOTE_PRTCPT P
+                                                                JOIN VOTE_SELECTED S ON (P.VOTE_PRTCPT_SEQ = S.VOTE_PRTCPT_SEQ)
+                                                                WHERE ELECT_VOTE_SEQ = #{electVoteSeq}
+                                                            )) * 100) AS CANDIDATE_PERCENT
+		FROM DUAL
+	</select>
+
+	<select id="selectCandidatePercentListGen" parameterType="GeneralVoteCandidate" resultMap="CandidatePercentResultSet">
+		SELECT TRUNC((
+		                SELECT COUNT(*)
+		                FROM VOTE_PRTCPT P
+		                JOIN VOTE_SELECTED S ON (P.VOTE_PRTCPT_SEQ = S.VOTE_PRTCPT_SEQ)
+		                WHERE GNR_VOTE_SEQ = #{gnrVoteSeq}
+		                AND GNR_VOTE_CNDT_ENROLL_SEQ = #{gnrVoteCndtEnrollSeq}
+		            ) / DECODE((
+		                SELECT COUNT(*)
+		                FROM VOTE_PRTCPT P
+		                JOIN VOTE_SELECTED S ON (P.VOTE_PRTCPT_SEQ = S.VOTE_PRTCPT_SEQ)
+		                WHERE GNR_VOTE_SEQ = #{gnrVoteSeq}), 0, NULL, (
+                                                            SELECT COUNT(*)
+                                                            FROM VOTE_PRTCPT P
+                                                            JOIN VOTE_SELECTED S ON (P.VOTE_PRTCPT_SEQ = S.VOTE_PRTCPT_SEQ)
+                                                            WHERE GNR_VOTE_SEQ = #{gnrVoteSeq}
+                                                            )) * 100) AS CANDIDATE_PERCENT
+		FROM DUAL
+	</select>
+
+</mapper>

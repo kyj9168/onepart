@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ResidentMeeting">
+	<resultMap type="com.kh.onepart.resident.residentMeeting.vo.ResidentMeetingVO" id="residentMeetingVO">
+		<result property="residentsMeetingSeq" column="RESIDENTS_MEETING_SEQ"/>
+		<result property="residentSeq" column="RESIDENT_SEQ"/>
+		<result property="meetingNm" column="MEETING_NM"/>
+		<result property="meetingTopic" column="MEETING_TOPIC"/>
+		<result property="meetingIntro" column="MEETING_INTRO"/>
+		<result property="meetingPlace" column="MEETING_PLACE"/>
+		<result property="meetingDt" column="MEETING_DT"/>
+		<result property="meetingStatus" column="MEETING_STATUS"/>
+		<result property="meetingMinutes" column="MEETING_MINUTES"/>
+		<result property="meetingEnrollDt" column="MEETING_ENROLL_DT"/>
+		<result property="cancleReason" column="CANCLE_REASON"/>
+		<result property="cancleDt" column="CANCLE_DT"/>
+		<result property="mettingType" column="METTING_TYPE"/>
+		<result property="deleteTf" column="DELETE_TF"/>
+		<result property="meetingTm" column="MEETING_TM"/>
+	</resultMap>
+
+	<resultMap type="com.kh.onepart.resident.residentMeeting.vo.ResidentAllInfo" id="residentAllInfo">
+		<id property="residentSeq" column="RESIDENT_SEQ"/>
+		<result property="residentId" column="RESIDENT_ID"/>
+		<result property="residentNm" column="RESIDENT_NM"/>
+		<result property="residentPhone" column="RESIDENT_PHONE"/>
+		<result property="residentEmail" column="RESIDENT_EMAIL"/>
+		<result property="aptDetailInfoSeq" column="APT_DETAIL_INFO_SEQ"/>
+		<result property="householdAuthType" column="HOUSEHOLD_AUTH_TYPE"/>
+		<result property="residentEnrollDt" column="RESIDENT_ENROLL_DT"/>
+		<result property="leaveTf" column="LEAVE_TF"/>
+		<result property="aptAuthCd" column="APT_AUTH_CD"/>
+		<result property="leaveDt" column="LEAVE_DT"/>
+		<result property="residentBirth" column="RESIDENT_BIRTH"/>
+		<result property="confirmTf" column="CONFIRM_TF"/>
+		<result property="residentGender" column="RESIDENT_GENDER"/>
+
+		<result property="aptAuthType" column="APT_AUTH_TYPE"/>
+		<result property="aptAuthNm" column="APT_AUTH_NM"/>
+
+		<result property="bdNm" column="BD_NM"/>
+		<result property="rmNm" column="RM_NM"/>
+
+
+	</resultMap>
+
+	<!-- 입주자 대표 회의 메인페이지 -->
+	<select id="selectMeetingInfoList" resultMap="residentMeetingVO">
+		SELECT	*
+		FROM	RESIDENTS_MEETING
+		WHERE	DELETE_TF = 'N'
+	</select>
+
+	<!-- 입주민 정보 가져오기 -->
+	<select id="selectResidentVOList" resultMap="residentAllInfo">
+		SELECT  *
+	    FROM    RESIDENT t1
+	    INNER JOIN APT_AUTH t2 ON (t1.APT_AUTH_CD = t2.APT_AUTH_CD)
+	    INNER JOIN APT_DETAIL_INFO t3 ON (t1.APT_DETAIL_INFO_SEQ = t3.APT_DETAIL_INFO_SEQ)
+	    WHERE   t1.APT_AUTH_CD IN (1, 2, 3, 4)
+	    AND     t1.LEAVE_TF = 'N'
+	    AND     t1.CONFIRM_TF = 'Y'
+	    ORDER BY t1.APT_AUTH_CD
+	</select>
+
+	<!-- 회의 등록 -->
+	<insert id="insertMeetingRegister" parameterType="residentMeetingVO">
+		INSERT INTO RESIDENTS_MEETING
+		VALUES (
+			RESIDENTS_MEETING_SEQ.NEXTVAL,
+			#{residentSeq},
+			#{meetingNm},
+			#{meetingTopic},
+			#{meetingIntro},
+			#{meetingPlace},
+			#{meetingDt},
+			#{meetingStatus},
+			NULL,
+			SYSDATE,
+			NULL,
+			NULL,
+			#{mettingType},
+			'N',
+			#{meetingTm}
+
+		)
+	</insert>
+
+	<!-- 회의 상세보기 -->
+	<select id="selectResidentMeetingMainDetail" resultMap="residentMeetingVO" parameterType="residentMeetingVO">
+		SELECT	*
+        FROM	RESIDENTS_MEETING
+		WHERE	RESIDENTS_MEETING_SEQ = #{residentsMeetingSeq}
+	</select>
+
+	<!-- 입주자 대표 회의 삭제 -->
+	<delete id="deleteResidentMeeting" parameterType="_int">
+		DELETE FROM RESIDENTS_MEETING
+		WHERE	RESIDENTS_MEETING_SEQ = #{_parameter}
+	</delete>
+
+	<update id="residentMeetingMainModify" parameterType="residentMeetingVO">
+		UPDATE 	RESIDENTS_MEETING
+		SET		MEETING_NM = #{meetingNm},
+				MEETING_TOPIC = #{meetingTopic},
+				MEETING_INTRO = #{meetingIntro},
+				MEETING_PLACE = #{meetingPlace},
+				MEETING_DT = #{meetingDt},
+				MEETING_MINUTES = #{meetingMinutes},
+				MEETING_TM = #{meetingTm}
+		WHERE	RESIDENTS_MEETING_SEQ = #{residentsMeetingSeq}
+	</update>
+
+	<update id="saveMeetingMinutes" parameterType="residentMeetingVO">
+		UPDATE 	RESIDENTS_MEETING
+		SET		MEETING_MINUTES = #{meetingMinutes}
+		WHERE	RESIDENTS_MEETING_SEQ = #{residentsMeetingSeq}
+	</update>
+
+</mapper>

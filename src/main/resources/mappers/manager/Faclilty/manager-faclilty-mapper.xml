@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="faclilty">
+	<resultMap type="manager_reservation" id="manager_reservationReseultSet">
+		<id property="facSeq" column="FAC_SEQ"></id>
+		<result property="facNm" column="FAC_NM"/>
+		<result property="facPosition" column="FAC_POSITION"/>
+		<result property="facAvailWeekOfDay" column="FAC_AVAIL_WEEK_OF_DAY"/>
+		<result property="facAvailTm" column="FAC_AVAIL_TM"/>
+		<result property="facDefaultFee" column="FAC_DEFAULT_FEE"/>
+		<result property="facMaxHead" column="FAC_MAX_HEAD"/>
+		<result property="facSquareMeasure" column="FAC_SQUARE_MEASURE"/>
+		<result property="qrImgPath" column="QR_IMG_PATH"/>
+		<result property="facDetailInfo" column="FAC_DETAIL_INFO"/>
+		<result property="facRsrvInfo" column="FAC_RSRV_INFO"/>
+		<result property="facUseInfo" column="FAC_USE_INFO"/>
+		<result property="facCaution" column="FAC_CAUTION"/>
+		<result property="facType" column="FAC_TYPE"/>
+		<result property="facDelTf" column="FAC_DEL_TF"/>
+		<result property="imageSeq" column="IMAGE_SEQ"/>
+		<result property="fileType" column="FILE_TYPE"/>
+		<result property="originNm" column="ORIGIN_NM"/>
+		<result property="changeNm" column="CHANGE_NM"/>
+		<result property="filePath" column="FILE_PATH"/>
+		<result property="uploadDt" column="UPLOAD_DT"/>
+		<result property="messengerSeq" column="MESSENGER_SEQ"/>
+		<result property="openChatCommSeq" column="OPEN_CHAT_COMM_SEQ"/>
+	</resultMap>
+
+	<resultMap type="manager_facReservation" id="manager_facReservationResultSet">
+		<id property="facRsrvSeq" column="FAC_RSRV_SEQ"/>
+		<result property="facSeq" column="FAC_SEQ"/>
+		<result property="propUseDt" column="PROP_USE_DT"/>
+		<result property="propUseTm" column="PROP_USE_TM"/>
+		<result property="residentSeq" column="RESIDENT_SEQ"/>
+		<result property="propStatus" column="PROP_STATUS"/>
+		<result property="toalFee" column="TOAL_FEE"/>
+		<result property="useHeadCount" column="USE_HEAD_COUNT"/>
+		<result property="usePurpose" column="USE_PURPOSE"/>
+		<result property="etc" column="ETC"/>
+		<result property="rsrvGroupType" column="RSRV_GROUP_TYPE"/>
+		<result property="rsrvNm" column="RSRV_NM"/>
+		<result property="enrollDt" column="ENROLL_DT"/>
+		<result property="propSeat" column="PROP_SEAT"/>
+		<result property="rsrvPhone" column="RSRV_PHONE"/>
+		<result property="facNm" column="FAC_NM"/>
+		<result property="residentNm" column="RESIDENT_NM"/>
+	</resultMap>
+
+	<resultMap type="manager_facSeatInfo" id="manager_facSeatInfoResultSet">
+		<id property="facSeatSeq" column="FAC_SEAT_SEQ"/>
+		<result property="facSeatNum" column="FAC_SEAT_NUM"/>
+		<result property="facSeq" column="FAC_SEQ"/>
+		<result property="facPositionNum" column="FAC_POSITION_NUM"/>
+		<result property="facSeatMaxNum" column="FAC_SEAT_MAX_NUM"/>
+	</resultMap>
+
+	<select id="selectAllReservation" resultMap="manager_reservationReseultSet">
+		SELECT *
+		FROM FAC F
+		JOIN IMAGE I ON (F.FAC_SEQ = I.FAC_SEQ)
+		WHERE F.FAC_DEL_TF = 'N'
+		AND I.IMG_TYPE = 1
+	</select>
+
+	<select id="selectAllUserReservation" resultMap="manager_facReservationResultSet">
+		SELECT *
+		FROM FAC_RSRV R
+		JOIN FAC F ON (R.FAC_SEQ = F.FAC_SEQ)
+		JOIN RESIDENT RS ON (R.RESIDENT_SEQ = RS.RESIDENT_SEQ)
+		WHERE PROP_SEAT IS NULL
+		ORDER BY R.FAC_RSRV_SEQ DESC
+	</select>
+
+	<select id="selectOneUserReservation" resultMap="manager_facReservationResultSet" parameterType="_int">
+		SELECT *
+		FROM FAC_RSRV R
+		JOIN FAC F ON (R.FAC_SEQ = F.FAC_SEQ)
+		JOIN RESIDENT RS ON (R.RESIDENT_SEQ = RS.RESIDENT_SEQ)
+		WHERE FAC_RSRV_SEQ = #{facRsrvSeq}
+	</select>
+
+	<update id="updatesuccessReservation" parameterType="_int">
+		UPDATE FAC_RSRV
+		SET PROP_STATUS = 2
+		WHERE FAC_RSRV_SEQ = #{facRsrvSeq}
+	</update>
+
+	<update id="updatefailReservation" parameterType="_int">
+		UPDATE FAC_RSRV
+		SET PROP_STATUS = 3
+		WHERE FAC_RSRV_SEQ = #{facRsrvSeq}
+	</update>
+
+	<insert id="insertReservationInfo" parameterType="manager_reservation">
+		INSERT INTO FAC
+		VALUES (FAC_SEQ.NEXTVAL, #{facNm}, #{facPosition}, #{facAvailWeekOfDay}, #{facAvailTm}, #{facDefaultFee}, #{facMaxHead}, #{facSquareMeasure}, null,
+        #{facDetailInfo},
+        #{facRsrvInfo},
+        #{facUseInfo},
+        '시설을 이용하면서 생긴 사고에 대해서 아파트에는 책임이 없습니다. 또한 기재되어 있는 시설물들에 대해 분실이나 고장 시 모든 비용은 청구가 되며 납부 이전 까지는 아파트 단지내의 모든 시설물들의 예약 및 사용이 불가함을 알려드립니다.', 2, 'N')
+
+        <selectKey keyProperty="facSeq" resultType="Integer" order="AFTER">
+			SELECT FAC_SEQ.CURRVAL FROM DUAL
+		</selectKey>
+	</insert>
+
+	<insert id="insertReservationInfo2" parameterType="manager_reservation">
+		INSERT INTO FAC
+		VALUES (FAC_SEQ.NEXTVAL, #{facNm}, #{facPosition}, #{facAvailWeekOfDay}, #{facAvailTm}, #{facDefaultFee}, #{facMaxHead}, #{facSquareMeasure}, null,
+        #{facDetailInfo},
+        #{facRsrvInfo},
+        #{facUseInfo},
+        '시설을 이용하면서 생긴 사고에 대해서 아파트에는 책임이 없습니다. 또한 기재되어 있는 시설물들에 대해 분실이나 고장 시 모든 비용은 청구가 되며 납부 이전 까지는 아파트 단지내의 모든 시설물들의 예약 및 사용이 불가함을 알려드립니다.', 1, 'N')
+
+        <selectKey keyProperty="facSeq" resultType="Integer" order="AFTER">
+			SELECT FAC_SEQ.CURRVAL FROM DUAL
+		</selectKey>
+	</insert>
+
+	<insert id="insertReservationImgFirst" parameterType="manager_img">
+		INSERT INTO IMAGE
+		VALUES (IMAGE_SEQ.NEXTVAL, 1, #{originNm}, #{changeNm}, #{filePath},
+		SYSDATE, 1, #{facSeq}, NULL, NULL, NULL, NULL, NULL, NULL)
+	</insert>
+
+	<insert id="insertReservationImgSecond" parameterType="manager_img">
+		INSERT INTO IMAGE
+		VALUES (IMAGE_SEQ.NEXTVAL, 1, #{originNm}, #{changeNm}, #{filePath},
+		SYSDATE, 2, #{facSeq}, NULL, NULL, NULL, NULL, NULL, NULL)
+	</insert>
+
+	<select id="selectOneGeneralReservation" resultMap="manager_reservationReseultSet" parameterType="_int">
+		SELECT *
+		FROM FAC F
+		JOIN IMAGE I ON (F.FAC_SEQ = I.FAC_SEQ)
+		WHERE F.FAC_DEL_TF = 'N'
+		AND F.FAC_SEQ = #{facSeq}
+		AND I.IMG_TYPE = 1
+	</select>
+
+	<select id="selectOneSeatReservation" resultMap="manager_reservationReseultSet" parameterType="_int">
+		SELECT *
+		FROM FAC F
+		JOIN IMAGE I ON (F.FAC_SEQ = I.FAC_SEQ)
+		WHERE F.FAC_DEL_TF = 'N'
+		AND F.FAC_SEQ = #{facSeq}
+		AND I.IMG_TYPE = 1
+	</select>
+
+	<update id="updateFacilityGeneral" parameterType="manager_reservation">
+		UPDATE FAC
+		SET FAC_NM = #{facNm}, FAC_POSITION = #{facPosition}, FAC_AVAIL_WEEK_OF_DAY = #{facAvailWeekOfDay}, FAC_AVAIL_TM = #{facAvailTm},
+			FAC_DEFAULT_FEE = #{facDefaultFee}, FAC_MAX_HEAD = #{facMaxHead}, FAC_SQUARE_MEASURE = #{facSquareMeasure}, FAC_DETAIL_INFO = #{facDetailInfo},
+			FAC_RSRV_INFO = #{facRsrvInfo}, FAC_USE_INFO = #{facUseInfo}
+		WHERE FAC_SEQ = #{facSeq}
+	</update>
+
+	<update id="updateFacilitySeat" parameterType="manager_reservation">
+		UPDATE FAC
+		SET FAC_NM = #{facNm}, FAC_POSITION = #{facPosition}, FAC_AVAIL_WEEK_OF_DAY = #{facAvailWeekOfDay}, FAC_AVAIL_TM = #{facAvailTm},
+			FAC_DEFAULT_FEE = #{facDefaultFee}, FAC_MAX_HEAD = #{facMaxHead}, FAC_SQUARE_MEASURE = #{facSquareMeasure}, FAC_DETAIL_INFO = #{facDetailInfo},
+			FAC_RSRV_INFO = #{facRsrvInfo}, FAC_USE_INFO = #{facUseInfo}
+		WHERE FAC_SEQ = #{facSeq}
+	</update>
+
+	<update id="deleteFacliltyGeneral" parameterType="_int">
+		UPDATE FAC
+		SET FAC_DEL_TF = 'Y'
+		WHERE FAC_SEQ = #{facSeq}
+	</update>
+
+	<insert id="insertReservationSeatInfo" parameterType="manager_facReservation">
+		INSERT INTO FAC_SEAT
+		VALUES (FAC_SEAT_SEQ.NEXTVAL, #{facSeatNum}, #{facSeq}, #{facPositionNum}, #{facSeatMaxNum})
+	</insert>
+
+	<select id="selectOneReservationImages" parameterType="_int" resultMap="manager_reservationReseultSet">
+		SELECT *
+		FROM FAC F
+		JOIN IMAGE I ON (F.FAC_SEQ = I.FAC_SEQ)
+		WHERE F.FAC_DEL_TF = 'N'
+		AND F.FAC_SEQ = #{facSeq}
+		AND I.IMG_TYPE = 2
+		ORDER BY IMAGE_SEQ
+	</select>
+
+	<update id="updateFacliltyGeneralFirstImage" parameterType="manager_reservation">
+		UPDATE IMAGE
+		SET    ORIGIN_NM = #{originNm},
+		       CHANGE_NM = #{changeNm},
+		       FILE_PATH = #{filePath}
+		WHERE  FILE_TYPE = 1
+		AND    FAC_SEQ = #{facSeq}
+		AND    IMG_TYPE = 1
+	</update>
+
+	<update id="updateFacliltyGeneralSecondImage" parameterType="manager_reservation">
+		UPDATE IMAGE
+		SET    ORIGIN_NM = #{originNm},
+		       CHANGE_NM = #{changeNm},
+		       FILE_PATH = #{filePath}
+		WHERE  IMAGE_SEQ = #{imageSeq}
+	</update>
+
+</mapper>

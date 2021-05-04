@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="residentmanage11">
+
+	<resultMap type="ResidentManageVo" id="manage_residentResult">
+		<id property="residentSeq" column="RESIDENT_SEQ"/>  	
+		<result property="residentId" column="RESIDENT_ID"/>
+		<result property="residentPwd" column="RESIDENT_PWD"/>  	
+		<result property="residentNm" column="RESIDENT_NM"/>  	
+		<result property="residentPhone" column="RESIDENT_PHONE"/>  	
+		<result property="residentEmail" column="RESIDENT_EMAIL"/>  	
+		<result property="aptDetailInfoSeq" column="APT_DETAIL_INFO_SEQ"/>  	
+		<result property="householdAuthType" column="HOsUSEHOLD_AUTH_TYPE"/>  	
+		<result property="residentEnrollDt" column="RESIDENT_ENROLL_DT"/>  	
+		<result property="leaveTf" column="LEAVE_TF"/>  	
+		<result property="aptAuthCd" column="APT_AUTH_CD"/>  	
+		<result property="leaveDt" column="LEAVE_DT"/>  	
+		<result property="residentBirth" column="RESIDENT_BIRTH"/>  	
+		<result property="confirmTf" column="CONFIRM_TF"/>  	
+		<result property="residentGender" column="RESIDENT_GENDER"/>
+	</resultMap>
+
+	<select id="selectAllResident11" resultMap="manage_residentResult">
+		SELECT A.*
+		  FROM (SELECT ROWNUM RN, A.*
+		          FROM RESIDENT A
+		         WHERE LEAVE_TF = 'N'
+		       ) A
+		 WHERE RN &lt; 11
+	</select>
+
+</mapper>

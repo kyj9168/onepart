@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ManagerMain">
+
+	<!-- 총 세대 수 -->
+	<select id="selectTotalCount" resultType="_int">
+		SELECT  COUNT(*) AS TOTAL_COUNT
+    	FROM    APT_DETAIL_INFO
+	</select>
+
+	<!-- 현재 가구 수 -->
+	<select id="selectCurrentCount" resultType="_int">
+		SELECT  COUNT(*) AS CURRENT_COUNT
+	    FROM (
+	        SELECT  APT_DETAIL_INFO_SEQ
+	        FROM    RESIDENT
+	        GROUP BY APT_DETAIL_INFO_SEQ)
+	</select>
+
+	<!-- 총 입주민 인원 수 -->
+	<select id="selectResidentTotalCount" resultType="_int">
+		SELECT  COUNT(*)
+		FROM    RESIDENT
+		WHERE   LEAVE_TF = 'N'
+		AND     CONFIRM_TF = 'Y'
+	</select>
+
+	<!-- 가구당 인원 수 -->
+	<select id="selectCountPerHousehold" resultType="_double">
+		SELECT ROUND(AVG(COUNT), 2)
+		FROM (
+		    SELECT  COUNT(*) as COUNT
+		    FROM    RESIDENT
+		    WHERE   LEAVE_TF = 'N'
+		    AND     CONFIRM_TF = 'Y'
+		    GROUP BY APT_DETAIL_INFO_SEQ
+		    )
+	</select>
+
+	<!-- 등록 차량 수 -->
+	<select id="selectEnrollCarCount" resultType="_int">
+		SELECT  COUNT(*)
+		FROM    RESIDENT_ENROLL_CAR t1
+		INNER JOIN  RESIDENT t2
+		ON (t1.RESIDENT_SEQ = t2.RESIDENT_SEQ)
+		AND t2.LEAVE_TF = 'N'
+	</select>
+
+</mapper>

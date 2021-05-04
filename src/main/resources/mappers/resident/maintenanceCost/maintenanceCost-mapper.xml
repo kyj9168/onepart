@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="maintenance">
+	<resultMap type="CostHistory" id="CostHistoryResultSet">
+		<id property="maintenanceCostHistorySeq" column="MAINTENANCE_COST_HISTORY_SEQ"/>
+		<result property="maintenanceCostSeq" column="MAINTENANCE_COST_SEQ"/>
+		<result property="divisionYear" column="DIVISION_YEAR"/>
+		<result property="paymentEndDt" column="PAYMENT_END_DT"/>
+		<result property="aptDetailInfoSeq" column="APT_DETAIL_INFO_SEQ"/>
+		<result property="divisionMonth" column="DIVISION_MONTH"/>
+		<result property="paymentAmount" column="PAYMENT_AMOUNT"/>
+		<result property="divisionOne" column="DIVISION_ONE"/>
+		<result property="divisionTwo" column="DIVISION_TWO"/>
+		<result property="divisionThree" column="DIVISION_THREE"/>
+		<result property="sumMaintenanceCost" column="SUM_MAINTENANCE_COST"/>
+		<result property="avgMaintenanceCost" column="AVG_MAINTENANCE_COST"/>
+		<result property="sumMonthCost" column="SUM_MONTH_COST"/>
+	</resultMap>
+
+	<select id="selectAllUserMaintenanceCostList" parameterType="String" resultMap="CostHistoryResultSet">
+		SELECT A.MAINTENANCE_COST_SEQ, A.DIVISION_ONE, A.DIVISION_TWO, A.DIVISION_THREE,  B.MAINTENANCE_COST_HISTORY_SEQ, B.MAINTENANCE_COST_SEQ, B.DIVISION_YEAR, B.PAYMENT_END_DT, B.APT_DETAIL_INFO_SEQ, B.DIVISION_MONTH, B.PAYMENT_AMOUNT, (
+		                SELECT SUM(PAYMENT_AMOUNT)
+		                FROM MAINTENANCE_COST_HISTORY
+		                WHERE APT_DETAIL_INFO_SEQ = #{aptDetailInfoSeq}
+		                AND SUBSTR(DIVISION_YEAR, 0, 4) = TO_CHAR(SYSDATE, 'YYYY')
+                        AND SUBSTR(DIVISION_MONTH, 0, 2) = TO_CHAR(SYSDATE, 'MM') - 1
+		            ) AS SUM_MAINTENANCE_COST
+		FROM MAINTENANCE_COST_CD A
+		JOIN MAINTENANCE_COST_HISTORY B ON (A.MAINTENANCE_COST_SEQ = B.MAINTENANCE_COST_SEQ)
+		WHERE B.APT_DETAIL_INFO_SEQ = #{aptDetailInfoSeq}
+		AND SUBSTR(DIVISION_YEAR, 0, 4) = TO_CHAR(SYSDATE, 'YYYY')
+        AND SUBSTR(DIVISION_MONTH, 0, 2) = TO_CHAR(SYSDATE, 'MM') - 1
+		ORDER BY B.MAINTENANCE_COST_SEQ
+	</select>
+
+	<select id="selectUserSquareMeasure" resultType="_int" parameterType="String">
+		SELECT SQUARE_MEASURE
+		FROM APT_DETAIL_INFO
+		WHERE APT_DETAIL_INFO_SEQ = #{aptDetailInfoSeq}
+	</select>
+
+	<select id="selectAllUserCompareMaintenanceCostList" resultMap="CostHistoryResultSet" parameterType="_int">
+		SELECT A.MAINTENANCE_COST_SEQ, C.DIVISION_THREE, TRUNC(AVG(A.PAYMENT_AMOUNT)) AS AVG_MAINTENANCE_COST
+		FROM MAINTENANCE_COST_HISTORY A
+		JOIN APT_DETAIL_INFO B ON (A.APT_DETAIL_INFO_SEQ = B.APT_DETAIL_INFO_SEQ)
+		JOIN MAINTENANCE_COST_CD C ON (A.MAINTENANCE_COST_SEQ = C.MAINTENANCE_COST_SEQ)
+		WHERE B.SQUARE_MEASURE = #{squareMeasure}
+		AND DIVISION_ONE = '개별사용료'
+		AND SUBSTR(DIVISION_YEAR, 0, 4) = TO_CHAR(SYSDATE, 'YYYY')
+        AND SUBSTR(DIVISION_MONTH, 0, 2) = TO_CHAR(SYSDATE, 'MM') - 2
+		GROUP BY C.DIVISION_THREE, A.MAINTENANCE_COST_SEQ
+		ORDER BY A.MAINTENANCE_COST_SEQ
+	</select>
+
+	<select id="selectCompareUserMaintenanceCostList" parameterType="String" resultMap="CostHistoryResultSet">
+		SELECT A.MAINTENANCE_COST_SEQ, A.DIVISION_ONE, A.DIVISION_TWO, A.DIVISION_THREE,  B.MAINTENANCE_COST_HISTORY_SEQ, B.MAINTENANCE_COST_SEQ, B.DIVISION_YEAR, B.PAYMENT_END_DT, B.APT_DETAIL_INFO_SEQ, B.DIVISION_MONTH, B.PAYMENT_AMOUNT, (
+		                SELECT SUM(PAYMENT_AMOUNT)
+		                FROM MAINTENANCE_COST_HISTORY
+		                WHERE APT_DETAIL_INFO_SEQ = #{aptDetailInfoSeq}
+		                AND SUBSTR(DIVISION_YEAR, 0, 4) = TO_CHAR(SYSDATE, 'YYYY')
+                        AND SUBSTR(DIVISION_MONTH, 0, 2) = TO_CHAR(SYSDATE, 'MM') - 2
+		            ) AS SUM_MAINTENANCE_COST
+		FROM MAINTENANCE_COST_CD A
+		JOIN MAINTENANCE_COST_HISTORY B ON (A.MAINTENANCE_COST_SEQ = B.MAINTENANCE_COST_SEQ)
+		WHERE B.APT_DETAIL_INFO_SEQ = #{aptDetailInfoSeq}
+		AND DIVISION_ONE = '개별사용료'
+		AND SUBSTR(DIVISION_YEAR, 0, 4) = TO_CHAR(SYSDATE, 'YYYY')
+        AND SUBSTR(DIVISION_MONTH, 0, 2) = TO_CHAR(SYSDATE, 'MM') - 2
+		ORDER BY B.MAINTENANCE_COST_SEQ
+	</select>
+
+	<select id="selectAllUserCompareMonthCostList" parameterType="String" resultMap="CostHistoryResultSet">
+		SELECT A.MAINTENANCE_COST_SEQ, A.DIVISION_ONE, A.DIVISION_TWO, A.DIVISION_THREE,  B.MAINTENANCE_COST_HISTORY_SEQ, B.MAINTENANCE_COST_SEQ, B.DIVISION_YEAR, B.PAYMENT_END_DT, B.APT_DETAIL_INFO_SEQ, B.DIVISION_MONTH, B.PAYMENT_AMOUNT, (
+		                SELECT SUM(PAYMENT_AMOUNT)
+		                FROM MAINTENANCE_COST_HISTORY
+		                WHERE APT_DETAIL_INFO_SEQ = #{aptDetailInfoSeq}
+		                AND SUBSTR(DIVISION_YEAR, 0, 4) = TO_CHAR(SYSDATE, 'YYYY')
+                        AND SUBSTR(DIVISION_MONTH, 0, 2) = TO_CHAR(SYSDATE, 'MM') - 1
+		            ) AS SUM_MAINTENANCE_COST
+		FROM MAINTENANCE_COST_CD A
+		JOIN MAINTENANCE_COST_HISTORY B ON (A.MAINTENANCE_COST_SEQ = B.MAINTENANCE_COST_SEQ)
+		WHERE B.APT_DETAIL_INFO_SEQ = #{aptDetailInfoSeq}
+		AND SUBSTR(DIVISION_YEAR, 0, 4) = TO_CHAR(SYSDATE, 'YYYY')
+        AND SUBSTR(DIVISION_MONTH, 0, 2) BETWEEN TO_CHAR(SYSDATE, 'MM') - 5 AND TO_CHAR(SYSDATE, 'MM') - 1
+		ORDER BY B.MAINTENANCE_COST_SEQ, B.DIVISION_MONTH
+	</select>
+
+	<select id="selectAllSumMonthCostList" parameterType="String" resultMap="CostHistoryResultSet">
+		SELECT SUM(A.PAYMENT_AMOUNT) AS SUM_MONTH_COST, A.DIVISION_MONTH, B.DIVISION_ONE
+		FROM MAINTENANCE_COST_HISTORY A
+		JOIN MAINTENANCE_COST_CD B ON (A.MAINTENANCE_COST_SEQ = B.MAINTENANCE_COST_SEQ)
+		WHERE APT_DETAIL_INFO_SEQ = #{aptDetailInfoSeq}
+		AND SUBSTR(A.DIVISION_YEAR, 0, 4) = TO_CHAR(SYSDATE, 'YYYY')
+		AND SUBSTR(A.DIVISION_MONTH, 0, 2) BETWEEN TO_CHAR(SYSDATE, 'MM') - 5 AND TO_CHAR(SYSDATE, 'MM') - 1
+		GROUP BY A.DIVISION_MONTH, B.DIVISION_ONE
+		ORDER BY A.DIVISION_MONTH
+	</select>
+
+</mapper>

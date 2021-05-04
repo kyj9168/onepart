@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="OpenChatMember">
+
+	<resultMap type="com.kh.onepart.resident.warm.open_chatting.model.vo.OpenChatMemberVO" id="openChatMemberVOResultSet">
+		<id property="openChatMemberSeq" column="OPEN_CHAT_MEMBER_SEQ"/>
+		<result property="openChatSeq" column="OPEN_CHAT_SEQ"/>
+		<result property="residentSeq" column="RESIDENT_SEQ"/>
+		<result property="openChatMemberPrtcptDt" column="OPEN_CHAT_MEMBER_PRTCPT_DT"/>
+	</resultMap>
+
+	<resultMap type="com.kh.onepart.account.model.vo.ResidentVO" id="residentVOResultSet">
+		<id property="residentSeq" column="RESIDENT_SEQ"/>
+		<result property="residentId" column="RESIDENT_ID"/>
+		<result property="residentPwd" column="RESIDENT_PWD"/>
+		<result property="residentNm" column="RESIDENT_NM"/>
+		<result property="residentPhone" column="RESIDENT_PHONE"/>
+		<result property="residentEmail" column="RESIDENT_EMAIL"/>
+		<result property="aptDetailInfoSeq" column="APT_DETAIL_INFO_SEQ"/>
+		<result property="householdAuthType" column="HOUSEHOLD_AUTH_TYPE"/>
+		<result property="residentEnrollDt" column="RESIDENT_ENROLL_DT"/>
+		<result property="leaveTf" column="LEAVE_TF"/>
+		<result property="aptAuthCd" column="APT_AUTH_CD"/>
+		<result property="leaveDt" column="LEAVE_DT"/>
+	</resultMap>
+
+
+
+
+	<select id="selectCountByOpenChatSeqAndResidentSeq" resultType="Integer" parameterType="OpenChatMemberVO">
+		SELECT count(*)
+		FROM OPEN_CHAT_MEMBER
+		WHERE OPEN_CHAT_SEQ = #{openChatSeq}
+			AND RESIDENT_SEQ = #{residentSeq}
+			AND STATUS = 'Y'
+	</select>
+
+	<insert id="insert" parameterType="OpenChatMemberVO">
+		INSERT INTO OPEN_CHAT_MEMBER
+			(OPEN_CHAT_MEMBER_SEQ, OPEN_CHAT_SEQ, RESIDENT_SEQ, OPEN_CHAT_MEMBER_PRTCPT_DT, STATUS)
+		VALUES
+			(OPEN_CHAT_MEMBER_SEQ.nextval, #{openChatSeq}, #{residentSeq}, sysdate, 'Y')
+	</insert>
+
+	<update id="getOutThisRoom" parameterType="OpenChatMemberVO">
+		update OPEN_CHAT_MEMBER set status = 'N'
+		WHERE OPEN_CHAT_SEQ = #{openChatSeq} AND RESIDENT_SEQ = #{residentSeq}
+	</update>
+
+	<select id="pastMemberEnter" resultType="Integer" parameterType="OpenChatMemberVO">
+		SELECT count(*)
+		FROM OPEN_CHAT_MEMBER
+		WHERE OPEN_CHAT_SEQ = #{openChatSeq}
+			AND RESIDENT_SEQ = #{residentSeq}
+	</select>
+
+
+	<update id="reEnterOpenChatMember" parameterType="OpenChatMemberVO">
+		update OPEN_CHAT_MEMBER set status = 'Y'
+		WHERE OPEN_CHAT_SEQ = #{openChatSeq} AND RESIDENT_SEQ = #{residentSeq}
+	</update>
+
+	<select id="chatPerson" resultMap="residentVOResultSet" parameterType="Integer">
+		SELECT RESIDENT_ID
+		FROM OPEN_CHAT_MEMBER OCM
+        JOIN RESIDENT R ON(OCM.RESIDENT_SEQ = R.RESIDENT_SEQ)
+		WHERE OPEN_CHAT_SEQ = #{openChatSeq}
+		AND OCM.STATUS = 'Y'
+        ORDER BY RESIDENT_ID ASC
+	</select>
+
+</mapper>

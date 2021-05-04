@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Batch">
+
+	<!-- 쪽지 - 7일 전 메신저 삭제 -->
+	<update id="deleteMessenger">
+		UPDATE 	MESSENGER
+		SET 	DELETE_TF = 'Y'
+		WHERE   MESSENGER_ENROLL_DT &lt; SYSDATE - 7
+		AND     DELETE_TF = 'N'
+	</update>
+
+	<!-- 입주자 대표 회의 - 30분 주기로 입주자 대표 회의 상태 변경 - 예정 -->
+	<update id="updateResidentMeetingStatusScheduled">
+		<![CDATA[
+		UPDATE  RESIDENTS_MEETING
+SET     MEETING_STATUS = 1
+WHERE   TO_DATE(TO_CHAR(MEETING_DT, 'RRRR/MM/DD'),'RRRR/MM/DD') < TO_DATE(TO_CHAR(SYSDATE, 'RRRR/MM/DD'),'RRRR/MM/DD')
+OR      (TO_DATE(TO_CHAR(MEETING_DT, 'RRRR/MM/DD'),'RRRR/MM/DD') = TO_DATE(TO_CHAR(SYSDATE, 'RRRR/MM/DD'),'RRRR/MM/DD')
+         AND TO_DATE(TO_CHAR(SYSDATE, 'HH:MI'),'HH24:MI') < TO_DATE(SUBSTR(MEETING_TM, 0, 5),'HH24:MI'))
+		]]>
+	</update>
+
+	<!-- 입주자 대표 회의 - 30분 주기로 입주자 대표 회의 상태 변경 - 진행 -->
+	<update id="updateResidentMeetingStatusIng">
+		<![CDATA[
+		UPDATE  RESIDENTS_MEETING
+		SET     MEETING_STATUS = 2
+		WHERE   TO_DATE(TO_CHAR(MEETING_DT, 'RRRR/MM/DD'),'RRRR/MM/DD') = TO_DATE(TO_CHAR(SYSDATE, 'RRRR/MM/DD'),'RRRR/MM/DD')
+		AND     TO_DATE(TO_CHAR(SYSDATE, 'HH:MI'),'HH24:MI') > TO_DATE(SUBSTR(MEETING_TM, 0, 5),'HH24:MI')
+		AND     TO_DATE(TO_CHAR(SYSDATE, 'HH:MI'),'HH24:MI') < TO_DATE(SUBSTR(MEETING_TM, 7),'HH24:MI')
+		]]>
+	</update>
+
+	<!-- 입주자 대표 회의 - 30분 주기로 입주자 대표 회의 상태 변경 - 완료 -->
+	<update id="updateResidentMeetingStatusFinish">
+		<![CDATA[
+		UPDATE  RESIDENTS_MEETING
+		SET     MEETING_STATUS = 3
+		WHERE   TO_DATE(TO_CHAR(MEETING_DT, 'RRRR/MM/DD'),'RRRR/MM/DD') = TO_DATE(TO_CHAR(SYSDATE, 'RRRR/MM/DD'),'RRRR/MM/DD')
+		AND     TO_DATE(TO_CHAR(SYSDATE, 'HH:MI'),'HH24:MI') < TO_DATE(SUBSTR(MEETING_TM, 0, 5),'HH24:MI')
+		OR      (TO_DATE(TO_CHAR(SYSDATE, 'HH:MI'),'HH24:MI') = TO_DATE(SUBSTR(MEETING_TM, 0, 5),'HH24:MI')
+		        AND TO_DATE(TO_CHAR(SYSDATE, 'HH:MI'),'HH24:MI') > TO_DATE(SUBSTR(MEETING_TM, 7),'HH24:MI'))
+		]]>
+	</update>
+
+	<update id="updateSurveyStatusScheduled">
+		<![CDATA[
+		UPDATE  SURVEY
+		SET     SURVEY_STATUS = 1
+		WHERE   TO_DATE(SUBSTR(SURVEY_PERIOD, 0, 10),'RRRR/MM/DD') > TO_DATE(TO_CHAR(SYSDATE, 'RRRR/MM/DD'),'RRRR/MM/DD')
+		]]>
+	</update>
+
+	<update id="updateSurveyStatusIng">
+		<![CDATA[
+		UPDATE  SURVEY
+		SET     SURVEY_STATUS = 2
+		WHERE   TO_DATE(SUBSTR(SURVEY_PERIOD, 15),'RRRR/MM/DD') >= TO_DATE(TO_CHAR(SYSDATE, 'RRRR/MM/DD'),'RRRR/MM/DD')
+		AND     TO_DATE(SUBSTR(SURVEY_PERIOD, 0, 10),'RRRR/MM/DD') <= TO_DATE(TO_CHAR(SYSDATE, 'RRRR/MM/DD'),'RRRR/MM/DD')
+		]]>
+	</update>
+
+	<update id="updateSurveyStatusFinish">
+		<![CDATA[
+		UPDATE  SURVEY
+		SET     SURVEY_STATUS = 3
+		WHERE   TO_DATE(SUBSTR(SURVEY_PERIOD, 15),'RRRR/MM/DD') < TO_DATE(TO_CHAR(SYSDATE, 'RRRR/MM/DD'),'RRRR/MM/DD')
+		]]>
+	</update>
+
+</mapper>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="noticemanage1">
+
+	<resultMap type="NoticeManagerVo" id="manage_noticeResult">
+		<id property="noticeSeq" column="NOTICE_SEQ"/>  	
+		<result property="noticeTitle" column="NOTICE_TITLE"/>
+		<result property="noticeContent" column="NOTICE_CONTENT"/>
+		<result property="noticeEnrollDt" column="NOTICE_ENROLL_DT"/>
+	</resultMap>
+
+	<select id="selectAllNotice1" resultMap="manage_noticeResult">
+		SELECT * FROM NOTICE
+		ORDER BY NOTICE_SEQ
+	</select>
+
+</mapper>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="Main">
+
+	<select id="selectNoReadMessengerCount" parameterType="String" resultType="_int">
+		SELECT	COUNT(*)
+		FROM	MESSENGER
+		WHERE	MESSENGER_RECEIVER = #{_parameter}
+        AND     READ_TM IS NULL
+        AND     DELETE_TF = 'N'
+        AND     KEEP_TF = 'N'
+	</select>
+
+
+</mapper>

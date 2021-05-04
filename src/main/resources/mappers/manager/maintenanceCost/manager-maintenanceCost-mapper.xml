@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="Managermaintenance">
+	<resultMap type="manager_CostHistory" id="manager_CostHistoryResultSet">
+		<id property="maintenanceCostHistorySeq" column="MAINTENANCE_COST_HISTORY_SEQ"/>
+		<result property="maintenanceCostSeq" column="MAINTENANCE_COST_SEQ"/>
+		<result property="divisionYear" column="DIVISION_YEAR"/>
+		<result property="paymentEndDt" column="PAYMENT_END_DT"/>
+		<result property="aptDetailInfoSeq" column="APT_DETAIL_INFO_SEQ"/>
+		<result property="divisionMonth" column="DIVISION_MONTH"/>
+		<result property="paymentAmount" column="PAYMENT_AMOUNT"/>
+		<result property="divisionOne" column="DIVISION_ONE"/>
+		<result property="divisionTwo" column="DIVISION_TWO"/>
+		<result property="divisionThree" column="DIVISION_THREE"/>
+		<result property="sumMaintenanceCost" column="SUM_MAINTENANCE_COST"/>
+		<result property="avgMaintenanceCost" column="AVG_MAINTENANCE_COST"/>
+		<result property="sumMonthCost" column="SUM_MONTH_COST"/>
+	</resultMap>
+
+	<select id="selectAllApartCostList" resultMap="manager_CostHistoryResultSet">
+		SELECT SUM(PAYMENT_AMOUNT) AS SUM_MONTH_COST, B.MAINTENANCE_COST_SEQ, A.DIVISION_THREE, B.DIVISION_MONTH
+		FROM MAINTENANCE_COST_CD A
+		JOIN MAINTENANCE_COST_HISTORY B ON (A.MAINTENANCE_COST_SEQ = B.MAINTENANCE_COST_SEQ)
+		WHERE SUBSTR(DIVISION_YEAR, 0, 4) = TO_CHAR(SYSDATE, 'YYYY')
+		AND SUBSTR(DIVISION_MONTH, 0, 2) BETWEEN TO_CHAR(SYSDATE, 'MM') - 5 AND TO_CHAR(SYSDATE, 'MM') - 1
+		GROUP BY B.MAINTENANCE_COST_SEQ, A.DIVISION_THREE, B.DIVISION_MONTH
+		ORDER BY B.MAINTENANCE_COST_SEQ, B.DIVISION_MONTH
+	</select>
+
+	<select id="selectAllSumCostList" resultMap="manager_CostHistoryResultSet">
+		SELECT SUM(PAYMENT_AMOUNT) AS SUM_MONTH_COST, B.DIVISION_MONTH
+		FROM MAINTENANCE_COST_CD A
+		JOIN MAINTENANCE_COST_HISTORY B ON (A.MAINTENANCE_COST_SEQ = B.MAINTENANCE_COST_SEQ)
+		WHERE SUBSTR(DIVISION_YEAR, 0, 4) = TO_CHAR(SYSDATE, 'YYYY')
+		AND SUBSTR(DIVISION_MONTH, 0, 2) BETWEEN TO_CHAR(SYSDATE, 'MM') - 5 AND TO_CHAR(SYSDATE, 'MM') - 1
+		GROUP BY B.DIVISION_MONTH
+		ORDER BY B.DIVISION_MONTH
+	</select>
+
+	<insert id="insertExcelMaintenanceCost" parameterType="manager_CostExcel">
+			INSERT INTO MAINTENANCE_COST_HISTORY
+			VALUES (MAINTENANCE_COST_HISTORY_SEQ.NEXTVAL,	#{category},	#{excelYear},	TO_DATE(#{insertDay},  'YYYY/MM/DD'),	'1_101_501',	#{excelMonth},	#{money})
+	</insert>
+
+</mapper>

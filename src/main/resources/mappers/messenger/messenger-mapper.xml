@@ -1,0 +1,351 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Messenger">
+
+	<resultMap type="com.kh.onepart.resident.messenger.model.vo.ResponseMessengerAndResidentAndManagerVO" id="responseMessengerAndResidentAndManagerVO">
+		<id property="messengerSeq" column="MESSENGER_SEQ"/>
+		<result property="messengerSender" column="MESSENGER_SENDER"/>
+		<result property="messengerReceiver" column="MESSENGER_RECEIVER"/>
+		<result property="messengerContent" column="MESSENGER_CONTENT"/>
+		<result property="readTm" column="READ_TM"/>
+		<result property="messengerEnrollDt" column="MESSENGER_ENROLL_DT"/>
+		<result property="keepTf" column="KEEP_TF"/>
+
+		<result property="residentSeq" column="RESIDENT_SEQ"/>
+		<result property="residentId" column="RESIDENT_ID"/>
+		<result property="residentPwd" column="RESIDENT_PWD"/>
+		<result property="residentNm" column="RESIDENT_NM"/>
+		<result property="residentPhone" column="RESIDENT_PHONE"/>
+		<result property="residentEmail" column="RESIDENT_EMAIL"/>
+		<result property="householdAuthType" column="HOUSEHOLD_AUTH_TYPE"/>
+		<result property="residentEnrollDt" column="RESIDENT_ENROLL_DT"/>
+		<result property="leaveTf" column="LEAVE_TF"/>
+		<result property="aptAuthCd" column="APT_AUTH_CD"/>
+		<result property="leaveDt" column="LEAVE_DT"/>
+		<result property="residentBirth" column="RESIDENT_BIRTH"/>
+		<result property="confirmTf" column="CONFIRM_TF"/>
+		<result property="residentGender" column="RESIDENT_GENDER"/>
+
+		<result property="aptDetailInfoSeq" column="APT_DETAIL_INFO_SEQ"/>
+		<result property="bdNm" column="BD_NM"/>
+		<result property="rmNm" column="RM_NM"/>
+		<result property="squareMeasure" column="SQUARE_MEASURE"/>
+
+		<result property="managerSeq" column="MANAGER_SEQ"/>
+		<result property="managerNm" column="MANAGER_NM"/>
+		<result property="deptCd" column="DEPT_CD"/>
+		<result property="managerId" column="MANAGER_ID"/>
+		<result property="managerPwd" column="MANAGER_PWD"/>
+		<result property="managerPhone" column="MANAGER_PHONE"/>
+		<result property="managerEmail" column="MANAGER_EMAIL"/>
+		<result property="managerEnrollDt" column="MANAGER_ENROLL_DT"/>
+		<result property="managerLeaveDt" column="MANAGER_LEAVE_DT"/>
+		<result property="managerLeaveTf" column="MANAGER_LEAVE_TF"/>
+
+		<result property="deptNm" column="DEPT_NM"/>
+	</resultMap>
+
+	<resultMap type="com.kh.onepart.resident.messenger.model.vo.ManagerAndDeptVO" id="managerAndDeptVOResultSet">
+		<id property="managerSeq" column="MANAGER_SEQ"/>
+		<result property="managerNm" column="MANAGER_NM"/>
+		<result property="deptNm" column="DEPT_NM"/>
+	</resultMap>
+
+	<resultMap type="com.kh.onepart.resident.messenger.model.vo.ResponseResidentVO" id="responseResidentVO">
+		<id property="residentSeq" column="RESIDENT_SEQ"/>
+		<result property="residentNm" column="RESIDENT_NM"/>
+		<result property="bdNm" column="BD_NM"/>
+		<result property="rmNm" column="RM_NM"/>
+	</resultMap>
+
+	<resultMap type="com.kh.onepart.resident.messenger.model.vo.MessengerBasicAllData" id="messengerBasicAllData">
+		<id property="messengerSeq" column="MESSENGER_SEQ"/>
+		<result property="messengerSender" column="MESSENGER_SENDER"/>
+		<result property="messengerReceiver" column="MESSENGER_RECEIVER"/>
+		<result property="messengerContent" column="MESSENGER_CONTENT"/>
+		<result property="readTm" column="READ_TM"/>
+		<result property="messengerEnrollDt" column="MESSENGER_ENROLL_DT"/>
+		<result property="keepTf" column="KEEP_TF"/>
+		<result property="deleteTf" column="DELETE_TF"/>
+
+		<result property="sendResidentSeq" column="RESIDENT_SEQ"/>
+		<result property="sendResidentNm" column="RESIDENT_NM"/>
+
+		<result property="sendManagerSeq" column="MANAGER_SEQ"/>
+		<result property="sendManagerNm" column="MANAGER_NM"/>
+
+		<result property="receiverResidentSeq" column="REC_RESIDENT_SEQ"/>
+		<result property="receiverResidentNm" column="REC_RESIDENT_NM"/>
+
+		<result property="receiverManagerSeq" column="REC_MANAGER_SEQ"/>
+		<result property="receiverManagerNm" column="REC_MANAGER_NM"/>
+
+		<result property="bdNm" column="BD_NM"/>
+		<result property="rmNm" column="RM_NM"/>
+
+		<result property="deptNm" column="DEPT_NM"/>
+	</resultMap>
+
+	<resultMap type="com.kh.onepart.resident.messenger.model.vo.RequestImgVO" id="requestImgVO">
+		<id property="imageSeq" column="IMAGE_SEQ"/>
+		<result property="fileType" column="FILE_TYPE"/>
+		<result property="originNm" column="ORIGIN_NM"/>
+		<result property="changeNm" column="CHANGE_NM"/>
+		<result property="filePath" column="FILE_PATH"/>
+		<result property="uploadDt" column="UPLOAD_DT"/>
+		<result property="imgType" column="IMG_TYPE"/>
+		<result property="facSeq" column="FAC_SEQ"/>
+		<result property="messengerSeq" column="MESSENGER_SEQ"/>
+	</resultMap>
+
+	<resultMap type="com.kh.onepart.resident.messenger.model.vo.RequestAttachVO" id="requestAttachVO">
+		<id property="attchSeq" column="ATTCH_SEQ"/>
+		<result property="fileType" column="FILE_TYPE"/>
+		<result property="originNm" column="ORIGIN_NM"/>
+		<result property="changeNm" column="CHANGE_NM"/>
+		<result property="filePath" column="FILE_PATH"/>
+		<result property="uploadDt" column="UPLOAD_DT"/>
+		<result property="messengerSeq" column="MESSENGER_SEQ"/>
+	</resultMap>
+
+
+	<!-- 쪽지 작성 -->
+	<insert id="insertMessenger" parameterType="requestMessengerVO">
+		INSERT INTO MESSENGER
+	    VALUES (
+	        MESSENGER_SEQ.NEXTVAL,
+	        #{messengerSender},
+	        #{messengerReceiver},
+	        #{messengerContent},
+	        NULL,
+	        SYSDATE,
+	        'N',
+	        'N'
+	    )
+	    <selectKey keyProperty="messengerSeq" resultType="Integer" order="AFTER">
+			SELECT MESSENGER_SEQ.CURRVAL FROM DUAL
+		</selectKey>
+	</insert>
+
+	<!-- 이미지 등록 -->
+	<insert id="insertImage" parameterType="requestImgVO">
+		INSERT INTO IMAGE
+		VALUES (
+			IMAGE_SEQ.NEXTVAL,
+			6,
+			#{originNm},
+			#{changeNm},
+			#{filePath},
+			SYSDATE,
+			1,
+			NULL,
+			NULL,
+			NULL,
+			NULL,
+			NULL,
+			#{messengerSeq},
+			NULL
+		)
+	</insert>
+
+	<!-- 첨부파일 등록 -->
+	<insert id="insertAttachment" parameterType="requestAttachVO">
+		INSERT INTO ATTACHMENT
+		VALUES (
+			ATTCH_SEQ.NEXTVAL,
+			1,
+			#{originNm},
+			#{changeNm},
+			#{filePath},
+			SYSDATE,
+			#{messengerSeq},
+			NULL
+		)
+	</insert>
+
+	<!-- 페이징을 위한 쪽지 타입별 카운트 -->
+	<select id="selectMessengerCount" resultType="_int" parameterType="requestMessengerVO">
+		SELECT  COUNT(*)
+	    FROM    MESSENGER
+	    <choose>
+			<when test="type == 1">
+				WHERE 	MESSENGER_RECEIVER = #{loginUser}
+				AND     READ_TM IS NULL
+				AND		DELETE_TF = 'N'
+				AND		KEEP_TF = 'N'
+			</when>
+			<when test="type == 2">
+				WHERE	MESSENGER_RECEIVER = #{loginUser}
+				AND		DELETE_TF = 'N'
+			</when>
+			<when test="type == 3">
+				WHERE 	MESSENGER_SENDER = #{loginUser}
+				AND		DELETE_TF = 'N'
+			</when>
+			<when test="type == 4">
+				WHERE 	MESSENGER_RECEIVER = #{loginUser}
+				AND     KEEP_TF = 'Y'
+				AND		DELETE_TF = 'N'
+			</when>
+	    </choose>
+	</select>
+
+	<!-- 타입별 메신저 리스트 -->
+	<select id="selectMessengerList" parameterType="requestMessengerVO" resultMap="responseMessengerAndResidentAndManagerVO">
+	    SELECT  *
+	    FROM    MESSENGER t1
+	    LEFT OUTER JOIN RESIDENT t2
+	    ON (t1.MESSENGER_SENDER = TO_CHAR(t2.RESIDENT_SEQ))
+	    LEFT OUTER JOIN MANAGER t3
+	    ON (t1.MESSENGER_SENDER = t3.MANAGER_SEQ)
+	    LEFT OUTER JOIN APT_DETAIL_INFO t4 ON (t2.APT_DETAIL_INFO_SEQ = t4.APT_DETAIL_INFO_SEQ)
+	    LEFT OUTER JOIN DEPT t5 ON (t3.DEPT_CD = t5.DEPT_CD)
+	    <choose>
+			<when test="type == 1">
+				WHERE 	MESSENGER_RECEIVER = #{loginUser}
+				AND     READ_TM IS NULL
+				AND		DELETE_TF = 'N'
+				AND		KEEP_TF = 'N'
+			</when>
+			<when test="type == 2">
+				WHERE	MESSENGER_RECEIVER = #{loginUser}
+			</when>
+			<when test="type == 3">
+				WHERE 	MESSENGER_SENDER = #{loginUser}
+			</when>
+			<when test="type == 4">
+				WHERE 	MESSENGER_RECEIVER = #{loginUser}
+				AND     KEEP_TF = 'Y'
+			</when>
+	    </choose>
+	    AND		t1.DELETE_TF = 'N'
+	    ORDER BY t1.MESSENGER_ENROLL_DT DESC
+	</select>
+
+	<!-- 관리자 명단 -->
+	<select id="selectManagerList" resultMap="managerAndDeptVOResultSet">
+		SELECT  t1.MANAGER_SEQ, t1.MANAGER_NM, t2.DEPT_NM
+	    FROM    MANAGER t1
+	    INNER JOIN DEPT t2
+	    ON (t1.DEPT_CD = t2.DEPT_CD)
+	    WHERE   t1.MANAGER_LEAVE_TF = 'N'
+	    ORDER BY t1.MANAGER_SEQ
+	</select>
+
+	<!-- 입주민 명단 -->
+	<select id="selectResidentList" resultMap="responseResidentVO">
+		SELECT  t1.RESIDENT_SEQ, t1.RESIDENT_NM, t2.BD_NM, t2.RM_NM
+		FROM    RESIDENT t1
+		INNER JOIN APT_DETAIL_INFO t2
+		ON (t1.APT_DETAIL_INFO_SEQ = t2.APT_DETAIL_INFO_SEQ)
+		WHERE   t1.LEAVE_TF = 'N'
+		AND     t1.CONFIRM_TF = 'Y'
+		ORDER BY t2.BD_NM, t2.RM_NM, t1.HOUSEHOLD_AUTH_TYPE
+	</select>
+
+	<select id="selectMessengerDetail" parameterType="String" resultMap="messengerBasicAllData">
+		SELECT
+			t1.MESSENGER_SEQ,
+			t1.MESSENGER_SENDER,
+			t1.MESSENGER_RECEIVER,
+			t1.MESSENGER_CONTENT,
+			t1.READ_TM,
+			t1.MESSENGER_ENROLL_DT,
+			t1.KEEP_TF,
+			t1.DELETE_TF,
+			t2.RESIDENT_SEQ,
+			t2.RESIDENT_NM,
+			t3.MANAGER_SEQ,
+			t3.MANAGER_NM,
+			t4.RESIDENT_SEQ AS REC_RESIDENT_SEQ,
+			t4.RESIDENT_NM AS REC_RESIDENT_NM,
+			t5.MANAGER_SEQ AS REC_MANAGER_SEQ,
+			t5.MANAGER_NM AS REC_MANAGER_NM,
+			t6.BD_NM,
+			t6.RM_NM,
+			t7.DEPT_NM
+		FROM    MESSENGER t1
+		LEFT OUTER JOIN RESIDENT t2
+		ON (t1.MESSENGER_SENDER = TO_CHAR(t2.RESIDENT_SEQ))
+		LEFT OUTER JOIN MANAGER t3
+		ON (t1.MESSENGER_SENDER = t3.MANAGER_SEQ)
+		LEFT OUTER JOIN RESIDENT t4
+		ON (t1.MESSENGER_RECEIVER = TO_CHAR(t4.RESIDENT_SEQ))
+		LEFT OUTER JOIN MANAGER t5
+		ON (t1.MESSENGER_RECEIVER = t5.MANAGER_SEQ)
+		LEFT OUTER JOIN APT_DETAIL_INFO t6 ON (t2.APT_DETAIL_INFO_SEQ = t6.APT_DETAIL_INFO_SEQ)
+		LEFT OUTER JOIN DEPT t7
+		ON (t3.DEPT_CD = t7.DEPT_CD)
+		WHERE   t1.MESSENGER_SEQ = #{_parameter}
+	</select>
+
+	<select id="selectImgList" resultMap="requestImgVO" parameterType="String">
+		SELECT  *
+		FROM    MESSENGER t1
+		INNER JOIN IMAGE t2
+		ON      (t1.MESSENGER_SEQ = t2.MESSENGER_SEQ)
+		WHERE   t1.MESSENGER_SEQ = #{_parameter}
+	</select>
+
+	<select id="selectAttachmentList" resultMap="requestAttachVO" parameterType="String">
+		SELECT  *
+		FROM    MESSENGER t1
+		INNER JOIN ATTACHMENT t2
+		ON      (t1.MESSENGER_SEQ = t2.MESSENGER_SEQ)
+		WHERE   t1.MESSENGER_SEQ = #{_parameter}
+	</select>
+
+	<select id="selectDownloadImg" parameterType="_int" resultMap="requestImgVO">
+		SELECT	*
+		FROM	IMAGE
+		WHERE   IMAGE_SEQ = #{_parameter}
+	</select>
+
+	<select id="selectDownloadAttach" parameterType="_int" resultMap="requestAttachVO">
+		SELECT	*
+		FROM	ATTACHMENT
+		WHERE   ATTCH_SEQ = #{_parameter}
+	</select>
+
+	<!-- 메신저 읽기 처리 -->
+	<update id="updateMessengerReadProcess" parameterType="String">
+		UPDATE	MESSENGER
+		SET		READ_TM = SYSDATE
+		WHERE	MESSENGER_SEQ = #{_parameter}
+	</update>
+
+	<!-- 방문 차량용 쪽지 보내기 -->
+	<insert id="insertMessengerForVisitCar" parameterType="requestMessengerVO">
+		INSERT INTO MESSENGER
+	    VALUES (
+	        MESSENGER_SEQ.NEXTVAL,
+	        #{messengerSender},
+	        #{messengerReceiver},
+	        #{messengerContent},
+	        NULL,
+	        SYSDATE,
+	        'N',
+	        'N'
+	    )
+	</insert>
+
+	<update id="keepMessenger">
+		UPDATE  MESSENGER
+        SET     KEEP_TF = 'Y'
+        WHERE   MESSENGER_SEQ IN (
+        	<foreach item="item" collection="list" separator=",">
+        		#{item}
+        	</foreach>
+        )
+	</update>
+
+	<update id="deleteMessenger">
+		UPDATE  MESSENGER
+        SET     DELETE_TF = 'Y'
+        WHERE   MESSENGER_SEQ IN (
+        	<foreach item="item" collection="list" separator=",">
+        		#{item}
+        	</foreach>
+        )
+	</update>
+</mapper>
